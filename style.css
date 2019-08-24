@@ -6,7 +6,43 @@
  [tba]
  */
 
-body
-{
-    color: hotpink;
+.half {
+    position: absolute;
+    top: 0px;
+    width: 50%;
+    height: 100%;
+    z-index: -1;
+    border: 1px solid;
+}
+
+.left {
+    left: 0px;
+    background-color: red;
+    float: left;
+}
+
+.right {
+    right: 0px;
+    background-color: blue;
+    float: right;
+}
+
+.goal {
+    display: block;
+    width: 240px;
+    margin: auto;
+    background-color: #000000;
+    border-style: solid;
+    border-width: 5px;
+    border-radius: 10px;
+    color: white;
+    text-align: center;
+    margin-top: 25px;
+}
+
+.score {
+    display: block;
+    width: 33%;
+    height: 100%;
+    
 }
