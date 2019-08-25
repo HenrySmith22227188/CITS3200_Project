@@ -6,6 +6,10 @@
  [tba]
  */
 
+* {
+    font-family: "Arial Black";
+}
+
 .half {
     position: absolute;
     top: 0px;
@@ -29,7 +33,8 @@
 
 .goal {
     display: block;
-    width: 240px;
+    width: 180px;
+    height: 90px;
     margin: auto;
     background-color: #000000;
     border-style: solid;
@@ -45,4 +50,18 @@
     width: 33%;
     height: 100%;
     
+}
+
+.goal>.left {
+    border-top-left-radius: 5px;
+    border-bottom-left-radius: 5px;
+}
+
+.goal>.right {
+    border-top-right-radius: 5px;
+    border-bottom-right-radius: 5px;
+}
+
+.goal:hover {
+    border-color: yellow;
 }

@@ -11,3 +11,11 @@ var Game = {
     S: [[],[]]; //The progess made by each player towards each goal.
 }
 
+function generateGoals(G)
+{
+    html = "";
+    for(i=0; i<G; i++)
+    {
+        document.getElementById('goals').innerHTML += '<div class="goal"><div class="left score"><h3>2</h3></div><div class="right score"><h3>3</h3></div><h1>8</h1></div>';
+    }
+}

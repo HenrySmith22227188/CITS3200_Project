@@ -17,7 +17,6 @@
 <html>
     <head>
         <title> CITS3200 </title>
-    </head>
     
     <!-- Framework [TBD] -->
     
@@ -26,15 +25,30 @@
     
     <!-- JavaScript -->
     <script src="scripts.js"></script>
+    
+    <script>
+        function generateGoals(G)
+        {
+            html = "";
+            for(i=0; i<G; i++)
+            {
+                document.getElementById('goals').innerHTML += '<div class="goal"><div class="left score"><h3>2</h3></div><div class="right score"><h3>3</h3></div><h1>8</h1></div>';
+            }
+        };
+    </script>
+    </head>
+
     <body>
         <div class="left half"></div>
         <div class="right half"></div>
-        <div class="goal">
-            <div class="left score"><h1>2</h1></div>
-            <div class="right score"><h1>3</h1></div>
-            <h1>8</h1>
-        </div>
-       
+        <p onclick="generateGoals(3);">CLICK HERE</p>
+        <div id="goals">
+            <div class="goal">
+                <div class="left score"><h3>2</h3></div>
+                <div class="right score"><h3>3</h3></div>
+                <h1>8</h1>
+            </div>
+       </div>
     </body>
     
 </html>
