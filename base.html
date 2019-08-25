@@ -26,28 +26,17 @@
     <!-- JavaScript -->
     <script src="scripts.js"></script>
     
-    <script>
-        function generateGoals(G)
-        {
-            html = "";
-            for(i=0; i<G; i++)
-            {
-                document.getElementById('goals').innerHTML += '<div class="goal"><div class="left score"><h3>2</h3></div><div class="right score"><h3>3</h3></div><h1>8</h1></div>';
-            }
-        };
-    </script>
     </head>
 
     <body>
         <div class="left half"></div>
         <div class="right half"></div>
-        <p onclick="generateGoals(3);">CLICK HERE</p>
+        <div>
+            <h2>Dev Tools</h2>
+            <button onclick="generateGoals(Game.G[0]);">ADD GOAL(S)</button>
+        </div>
         <div id="goals">
-            <div class="goal">
-                <div class="left score"><h3>2</h3></div>
-                <div class="right score"><h3>3</h3></div>
-                <h1>8</h1>
-            </div>
+            <!-- JavaScript will add the HTML for each goal -->
        </div>
     </body>
     
