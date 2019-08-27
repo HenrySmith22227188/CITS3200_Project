@@ -20,17 +20,24 @@ function generateGoals() //A function to add HTML corresponding to the amount of
     G = Game.G[0];
     for(i=0; i<G; i++) //Adds G goals for each player.
     {
-        ii = i.toString();
-        html += '<div class="goal" id="goal' + ii + '"><div class="left score" onclick="incrementScore(0,1,' + ii + ')"><h3 id="score' + ii + '">'+(Game.S[0][i]).toString() + '</h3></div><div class="right score"><h3>' + (Game.S[1][i]).toString() + '</h3></div><h1>' + Game.V[0][i] + '</h1></div>';
-        
-        document.getElementById('goals').innerHTML = html;
+        ii = i.toString(); //To be inserted into the HTML to find the right goals.
         
         if((Game.S[0][i] >= Game.V[0][i])&&(Game.GoalOpen[i])) //Recognises when a player has reached the value for a goal.
         {
-            document.getElementById('goal' + ii).className += ' completed';
+            //document.getElementById('goal' + ii).className += ' completed';
             Game.GoalOpen[i] = false;
-            // ** TO DO: make this not generate EVERYTHING whenever anything changes. **
         }
+        
+        if(!(Game.GoalOpen[i]))
+        {
+            extraClass = ' completed';
+        } else {
+            extraClass = '';
+        }
+        
+        html += '<div class="goal' + extraClass + '" id="goal' + ii + '"><div class="left score" onclick="incrementScore(0,1,' + ii + ')"><h3 id="score' + ii + '">'+(Game.S[0][i]).toString() + '</h3></div><div class="right score"><h3>' + (Game.S[1][i]).toString() + '</h3></div><h1>' + Game.V[0][i] + '</h1></div>';
+        
+        document.getElementById('goals').innerHTML = html;
     }
 }
 
