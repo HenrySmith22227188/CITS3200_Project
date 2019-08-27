@@ -65,3 +65,7 @@
 .goal:hover {
     border-color: yellow;
 }
+
+.completed {
+    background-color: yellow;
+}
