@@ -12,6 +12,9 @@
  August - October, 2019
  
  This file contains the layout of the web application (currently untitled).
+ 
+ ASSUMPTIONS:
+ - The players cannot begin the game with any goals completed.
  -->
 
 <html>
@@ -28,12 +31,14 @@
     
     </head>
 
-    <body>
-        <div class="left half"></div>
+    <body onload="generateGoals();">
+        <div class="left half">
+            <h3 id="YourScore">Your score: 0</h3>
+        </div>
         <div class="right half"></div>
-        <div>
+        <div> <!--
             <h2>Dev Tools</h2>
-            <button onclick="generateGoals();">ADD GOAL(S)</button>
+            <button onclick="generateGoals();">ADD GOAL(S)</button> -->
         </div>
         <div id="goals">
             <!-- JavaScript will add the HTML for each goal -->

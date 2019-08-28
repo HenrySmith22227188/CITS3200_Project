@@ -9,12 +9,15 @@ var Game = {
     Vtie: 5, //The value gained by each player in the result of a tie for any goal.
     a: [0.9, 0.9], //The likelihood of making progess towards a goal (i.e. of the card not disintegrating) for each player.
     S: [[4,3,2,1],[2,6,0,2]], //The progess made by each player towards each goal.
-    GoalOpen: [true, true, true, true]
+    
+    //** The following can probably exist outside of the Game object, since we don't need to report them? **
+    GoalOpen: [true, true, true, true], //The completedness of the goals.
+    T: [0,0] //The total score for each player.
 };
 
 Game.G = [Game.V[0].length, Game.V[1].length]; //An array holding the number of goals available for each player.
 
-function generateGoals() //A function to add HTML corresponding to the amount of goals (which is defined in the value for G (in the Game object).
+function generateGoals() //A function to add HTML corresponding to the amount of goals (which is defined in the value for G in the Game object).
 {
     html = '';
     G = Game.G[0];
@@ -26,6 +29,8 @@ function generateGoals() //A function to add HTML corresponding to the amount of
         {
             //document.getElementById('goal' + ii).className += ' completed';
             Game.GoalOpen[i] = false;
+            Game.T[0] += Game.V[0][i];
+            document.getElementById('YourScore').innerHTML = 'Your score: ' + (Game.T[0]).toString();
         }
         
         if(!(Game.GoalOpen[i]))
