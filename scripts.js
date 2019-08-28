@@ -54,3 +54,8 @@ function incrementScore(p, n, g) //A function to increment the score of a player
         generateGoals();
     }
 }
+
+function selectCard(cardID) //A function to run when a card is selected.
+{
+    document.getElementById(cardID).className = 'selected';
+}
