@@ -19,11 +19,11 @@ Game.G = [Game.V[0].length, Game.V[1].length]; //An array holding the number of 
 
 function generateGoals() //A function to add HTML corresponding to the amount of goals (which is defined in the value for G in the Game object).
 {
-    html = '';
-    G = Game.G[0];
-    for(i=0; i<G; i++) //Adds G goals for each player.
+    var html = '';
+    var G = Game.G[0];
+    for(var i=0; i<G; i++) //Adds G goals for each player.
     {
-        ii = i.toString(); //To be inserted into the HTML to find the right goals.
+        var ii = i.toString(); //To be inserted into the HTML to find the right goals.
         
         if((Game.S[0][i] >= Game.V[0][i])&&(Game.GoalOpen[i])) //Recognises when a player has reached the value for a goal.
         {
@@ -35,12 +35,12 @@ function generateGoals() //A function to add HTML corresponding to the amount of
         
         if(!(Game.GoalOpen[i]))
         {
-            extraClass = ' completed';
+            var extraClass = ' completed';
         } else {
-            extraClass = '';
+            var extraClass = '';
         }
         
-        html += '<div class="goal' + extraClass + '" id="goal' + ii + '"><div class="left score" onclick="incrementScore(0,1,' + ii + ')"><h3 id="score' + ii + '">'+(Game.S[0][i]).toString() + '</h3></div><div class="right score"><h3>' + (Game.S[1][i]).toString() + '</h3></div><h1>' + Game.V[0][i] + '</h1></div>';
+        html += '<div><div class="player value"><h1>' + Game.V[0][i].toString() + '</h1></div><div class="opponent value"><h1>' + Game.V[1][i].toString() + '</h1></div><div class="goal' + extraClass + '" id="goal' + ii + '"><div class="left score" onclick="incrementScore(0,1,' + ii + ')"><h3 id="score' + ii + '">'+(Game.S[0][i]).toString() + '</h3></div><div class="right score"><h3>' + (Game.S[1][i]).toString() + '</h3></div></div></div>';
         
         document.getElementById('goals').innerHTML = html;
     }

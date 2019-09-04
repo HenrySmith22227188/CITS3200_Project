@@ -36,7 +36,6 @@
     width: 180px;
     height: 90px;
     margin: auto;
-    background-color: #000000;
     border-style: solid;
     border-width: 5px;
     border-radius: 10px;
@@ -47,7 +46,7 @@
 
 .score {
     display: block;
-    width: 33%;
+    width: 50%;
     height: 100%;
     
 }
@@ -113,4 +112,32 @@
     border-width: 5px;
     border-radius: 10px;
     color: yellow;
+}
+
+.value {
+    position: absolute;
+    display: block;
+    width: 50px;
+    height: 90px;
+    margin-bottom: 25px;
+    background-color: #000000;
+    color: white;
+    border-style: solid;
+    border-width: 5px;
+    border-radius: 30px;
+    text-align: center;
+}
+
+.player {
+    left: 0px;
+    margin-left: 40px;
+}
+
+.opponent {
+    right: 0px;
+    margin-right: 40px;
+}
+
+.value>p {
+    margin: auto;
 }
