@@ -48,7 +48,7 @@ function generateGoals() //A function to add HTML corresponding to the amount of
             var extraClass = '';
         }
         
-        html += '<div><div class="player value"><h1>' + Game.V[0][i].toString() + '</h1></div><div class="opponent value"><h1>' + Game.V[1][i].toString() + '</h1></div><div class="goal' + extraClass + '" id="goal' + ii + '"><div class="left score" onclick="incrementScore(0,1,' + ii + ')"><h3 id="score' + ii + '">'+(Game.S[0][i]).toString() + '</h3></div><div class="right score"><h3>' + (Game.S[1][i]).toString() + '</h3></div></div></div>';
+        html += '<div><div class="player value"><h1>' + Game.V[0][i].toString() + '</h1></div><div class="opponent value"><h1>' + Game.V[1][i].toString() + '</h1></div><div class="box playerBox" ondrop="drop(event);" ondragover="allowDrop(event);"></div><div class="box opponentBox" ondrop="drop(event);" ondragover="allowDrop(event);"></div><div class="goal' + extraClass + '" id="goal' + ii + '"><div class="left score" onclick="incrementScore(0,1,' + ii + ')"><h3 id="score' + ii + '">'+(Game.S[0][i]).toString() + '</h3></div><div class="right score"><h3>' + (Game.S[1][i]).toString() + '</h3></div></div></div>';
         
         document.getElementById('goals').innerHTML = html;
     }
@@ -63,11 +63,28 @@ function generateCards(number) {
 			Cards.I[i] = new Image();
 			Cards.I[i].src = 'https://cdn.pixabay.com/photo/2015/08/11/11/57/spades-884197_960_720.png'; //Will need to update code so as to allow different types of cards to become sourced
 		
-			html += '<img id="card' + i.toString() + '" src="' + Cards.I[i].src + '" alt="" onclick="selectCard(card'+i.toString()+');"/>';
+            html += '<img id="card' + i.toString() + '" src="' + Cards.I[i].src + '" alt="" onclick="selectCard(card'+i.toString()+');" draggable="true" ondragstart="drag(event);" />';
 		}
 	//}
 	
 	document.getElementById('cards').innerHTML = html;
+}
+
+function drag(card)
+{
+    card.dataTransfer.setData("text", card.target.id);
+}
+
+function allowDrop(card)
+{
+    card.preventDefault();
+}
+
+function drop(card)
+{
+    card.preventDefault();
+    var data = card.dataTransfer.getData("text");
+    card.target.appendChild(document.getElementById(data))
 }
 
 function start() {

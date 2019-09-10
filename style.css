@@ -87,6 +87,10 @@
     text-align: center;
 }
 
+#goals {
+    margin-top: 70px;
+}
+
 .cards {
     background-color: purple;
     position: fixed;
@@ -142,4 +146,29 @@
 
 .value>p {
     margin: auto;
+}
+
+.box {
+    position: absolute;
+    display: block;
+    height: 90px;
+    width: 25%;
+    border-style: solid;
+    border-width: 5px;
+    border-radius: 15px;
+    border-color: white;
+}
+
+.box img {
+    height: 80px;
+    padding: 5px;
+}
+
+.playerBox {
+    margin-left: 140px;
+}
+
+.opponentBox {
+    right: 0px;
+    margin-right: 140px;
 }
