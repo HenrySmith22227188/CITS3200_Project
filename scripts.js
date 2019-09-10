@@ -12,8 +12,16 @@ var Game = {
     
     //** The following can probably exist outside of the Game object, since we don't need to report them? **
     GoalOpen: [true, true, true, true], //The completedness of the goals.
-    T: [0,0] //The total score for each player.
+    T: [0,0], //The total score for each player.
+	tno: 1 // The turn number, initialised to 1. Increment during gameplay
+	//mtno: 10, //The maximum number of turns
 };
+
+var Cards = {
+	C: 20, //The number of cards avaliable to each player at start of game
+	V:  new Array(), //An array to hold the value of each card
+	I:	new Array() //An array to hold the image for each card corresponding to its value
+}
 
 Game.G = [Game.V[0].length, Game.V[1].length]; //An array holding the number of goals available for each player.
 
@@ -44,6 +52,27 @@ function generateGoals() //A function to add HTML corresponding to the amount of
         
         document.getElementById('goals').innerHTML = html;
     }
+}
+
+function generateCards(number) {
+	var html = '';
+	//for (var player in cards) {
+		//insert card placeholder for each player
+		for (var i = 0; i<Cards.C; i++) {
+			Cards.V[i] = 10;
+			Cards.I[i] = new Image();
+			Cards.I[i].src = 'https://cdn.pixabay.com/photo/2015/08/11/11/57/spades-884197_960_720.png'; //Will need to update code so as to allow different types of cards to become sourced
+		
+			html += '<img id="card' + i.toString() + '" src="' + Cards.I[i].src + '" alt="" onclick="selectCard(card'+i.toString()+');"/>';
+		}
+	//}
+	
+	document.getElementById('cards').innerHTML = html;
+}
+
+function start() {
+	generateGoals();
+	generateCards();
 }
 
 function incrementScore(p, n, g) //A function to increment the score of a player at a particular goal. p = player [0 or 1], n = score to increment by [int], g = the goal [int] to add points to.

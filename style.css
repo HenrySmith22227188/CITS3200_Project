@@ -107,12 +107,14 @@
     transform: scale(1.2);
 }
 
+/*
 .selected {
     border-style: solid;
     border-width: 5px;
     border-radius: 10px;
     color: yellow;
 }
+*/
 
 .value {
     position: absolute;

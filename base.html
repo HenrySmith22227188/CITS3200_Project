@@ -20,9 +20,7 @@
 <html>
     <head>
         <title> CITS3200 </title>
-    
-    <!-- Framework [TBD] -->
-    
+        
     <!-- CSS -->
     <link rel="stylesheet" type="text/css" href="style.css">
     
@@ -31,7 +29,7 @@
     
     </head>
 
-    <body onload="generateGoals();">
+    <body onload="start();">
         <div class="left half">
             <h3 id="YourScore">Your score: 0</h3>
         </div>
@@ -39,8 +37,8 @@
         <div id="goals">
             <!-- JavaScript will add the HTML for each goal -->
         </div>
-        <div class="cards">
-            <img id="card0" src="https://cdn.pixabay.com/photo/2015/08/11/11/57/spades-884197_960_720.png" onclick="selectCard('card0');"/> <!-- **Image for testing only** -->
+        <div id="cards" class="cards">
+           <!-- <img id="card0" src="https://cdn.pixabay.com/photo/2015/08/11/11/57/spades-884197_960_720.png" onclick="selectCard('card0');"/> <!-- **Image for testing only** -->
             
         </div>
     </body>
