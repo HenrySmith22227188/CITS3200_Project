@@ -1,0 +1,39 @@
+
+* {
+    /* font-family: "Arial Black"; */
+    background-color: darkslategray;
+    color:white;
+    font: "Lucida Grande","Helvetica Neue", sans-serif;
+    
+    
+}
+
+
+.title {
+    margin-top: 100px;
+    /* font: 50px; */
+    font-size: 200%;
+    text-align:center;
+
+}
+
+li{
+    text-align:left;
+    font-size: 80%;
+
+
+}
+.rules {
+    margin-left: 30%;
+    margin-right: 30%;
+    margin-top: 3%;
+    font-size: 160%;
+    text-align:center;
+
+}
+
+.play{
+    text-align:center;
+    margin-top: 10%;
+    font-size: 300%;
+}
