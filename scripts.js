@@ -8,7 +8,7 @@ var Game = {
     
     Vtie: 5, //The value gained by each player in the result of a tie for any goal.
     a: [0.9, 0.9], //The likelihood of making progess towards a goal (i.e. of the card not disintegrating) for each player.
-    S: [[4,3,2,1],[2,6,0,2]], //The progess made by each player towards each goal.
+    S: [[0,0,0,0],[0,0,0,0]], //The progess made by each player towards each goal.
     
     //** The following can probably exist outside of the Game object, since we don't need to report them? **
     GoalOpen: [true, true, true, true], //The completedness of the goals.
@@ -33,14 +33,6 @@ function generateGoals() //A function to add HTML corresponding to the amount of
     {
         var ii = i.toString(); //To be inserted into the HTML to find the right goals.
         
-        if((Game.S[0][i] >= Game.V[0][i])&&(Game.GoalOpen[i])) //Recognises when a player has reached the value for a goal.
-        {
-            //document.getElementById('goal' + ii).className += ' completed';
-            Game.GoalOpen[i] = false;
-            Game.T[0] += Game.V[0][i];
-            document.getElementById('YourScore').innerHTML = 'Your score: ' + (Game.T[0]).toString();
-        }
-        
         if(!(Game.GoalOpen[i]))
         {
             var extraClass = ' completed';
@@ -48,9 +40,22 @@ function generateGoals() //A function to add HTML corresponding to the amount of
             var extraClass = '';
         }
         
-        html += '<div><div class="player value"><h1>' + Game.V[0][i].toString() + '</h1></div><div class="opponent value"><h1>' + Game.V[1][i].toString() + '</h1></div><div class="box playerBox" ondrop="drop(event);" ondragover="allowDrop(event);"></div><div class="box opponentBox" ondrop="drop(event);" ondragover="allowDrop(event);"></div><div class="goal' + extraClass + '" id="goal' + ii + '"><div class="left score" onclick="incrementScore(0,1,' + ii + ')"><h3 id="score' + ii + '">'+(Game.S[0][i]).toString() + '</h3></div><div class="right score"><h3>' + (Game.S[1][i]).toString() + '</h3></div></div></div>';
+        html += '<div><div class="player value"><h1>' + Game.V[0][i].toString() + '</h1></div><div class="opponent value"><h1>' + Game.V[1][i].toString() + '</h1></div><div class="box playerBox" ondrop="drop(event);" ondragover="allowDrop(event);"></div><div class="box opponentBox" ondrop="drop(event);" ondragover="allowDrop(event);"></div><div class="goal' + extraClass + '" id="goal' + ii + '"><div class="left score"><h3 id="score' + ii + '">'+(Game.S[0][i]).toString() + '</h3></div><div class="right score"><h3>' + (Game.S[1][i]).toString() + '</h3></div></div></div>';
         
         document.getElementById('goals').innerHTML = html;
+    }
+}
+
+function updateGoals()
+{
+    for(var i=0; i<Game.G[0]; i++){
+        document.getElementById("score"+i.toString()).innerHTML = Game.S[0][i];
+        if((Game.S[0][i] >= Game.V[0][i])&&(Game.GoalOpen[i])) //Recognises when a player has reached the value for a goal.
+        {
+            Game.GoalOpen[i] = false;
+            Game.T[0] += Game.V[0][i];
+            document.getElementById('YourScore').innerHTML = 'Your score: ' + (Game.T[0]).toString();
+        }
     }
 }
 
@@ -67,24 +72,44 @@ function generateCards(number) {
 		}
 	//}
 	
-	document.getElementById('cards').innerHTML = html;
+	document.getElementById('cards').innerHTML = html; //Inserts the above HTML into the 'cards' div.
 }
 
-function drag(card)
+function drag(card) //Collects the ID of the card as it begins to get dragged.
 {
     card.dataTransfer.setData("text", card.target.id);
 }
 
-function allowDrop(card)
+var running = false; //Global variable.
+
+function allowDrop(card) //Allows the card boxes to accept cards.
 {
-    card.preventDefault();
+    running = true;
+    var goal = card.target.parentNode.lastChild;
+    var goalIndex = goal.id[goal.id.length-1];
+    if(Game.S[0][goalIndex] < Game.V[0][goalIndex])
+    {
+        card.preventDefault();
+    }
+    //This next bit tries to make the goals get bigger when a card is about to be dropped on its corresponding box, but this is a bit buggy.
+    goal.className += ' highlighted';
+    setTimeout(function(){
+               if(!running){
+                goal.classList.remove('highlighted');
+               }
+               }, 1000);
+    running = false;
 }
 
-function drop(card)
+function drop(card) //Once the card has been dropped to a valid box, it moves that node to its new parent.
 {
     card.preventDefault();
-    var data = card.dataTransfer.getData("text");
-    card.target.appendChild(document.getElementById(data))
+    var data = card.dataTransfer.getData("text"); //Gets the ID of card from the drag(card) function.
+    var goal = card.target.parentNode.lastChild.id; //Retrieves the ID of the goal it was dragged to.
+    var goalIndex = parseInt(goal[goal.length - 1]); //Extracts the goal number from its ID.
+    card.target.appendChild(document.getElementById(data)); //Moves the dragged card to the box in which it was dropped.
+    incrementScore(0, 1, goalIndex);
+        //TO DO: Make that function call have variable parameters.
 }
 
 function start() {
@@ -97,7 +122,7 @@ function incrementScore(p, n, g) //A function to increment the score of a player
     if(Game.GoalOpen[g]) //Only open goals can have cards allocated to them.
     {
         Game.S[p][g] += n;
-        generateGoals();
+        updateGoals();
     }
 }
 
