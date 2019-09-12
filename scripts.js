@@ -11,16 +11,18 @@ var Game = {
     S: [[0,0,0,0],[0,0,0,0]], //The progess made by each player towards each goal.
     
     //** The following can probably exist outside of the Game object, since we don't need to report them? **
-    GoalOpen: [true, true, true, true], //The completedness of the goals.
+    GoalOpen: [true, true, true, true], //The completedness of the goals. ** DELETE THIS **
     T: [0,0], //The total score for each player.
-	tno: 1 // The turn number, initialised to 1. Increment during gameplay
+	tno: 1, // The turn number, initialised to 1. Increment during gameplay
 	//mtno: 10, //The maximum number of turns
+    PlayerCard: [new Cards(), new Cards()]
 };
 
 var Cards = {
 	C: 20, //The number of cards avaliable to each player at start of game
 	V:  new Array(), //An array to hold the value of each card
-	I:	new Array() //An array to hold the image for each card corresponding to its value
+	I:	new Array(), //An array to hold the image for each card corresponding to its value
+    P:  new Array()
 }
 
 Game.G = [Game.V[0].length, Game.V[1].length]; //An array holding the number of goals available for each player.
@@ -69,15 +71,21 @@ function generateCards(number) {
 			Cards.I[i].src = 'https://cdn.pixabay.com/photo/2015/08/11/11/57/spades-884197_960_720.png'; //Will need to update code so as to allow different types of cards to become sourced
 		
             html += '<img id="card' + i.toString() + '" src="' + Cards.I[i].src + '" alt="" onclick="selectCard(card'+i.toString()+');" draggable="true" ondragstart="drag(event);" />';
-		}
+            Cards.P[i] = false;
+        }
+      document.getElementById('cards').innerHTML = html; //Inserts the above HTML into the 'cards' div.
 	//}
 	
-	document.getElementById('cards').innerHTML = html; //Inserts the above HTML into the 'cards' div.
+	
 }
 
 function drag(card) //Collects the ID of the card as it begins to get dragged.
 {
-    card.dataTransfer.setData("text", card.target.id);
+    index = parseInt(card.target.id[(card.target.id).length - 1]);
+    if(Cards.P[index]==false)
+    {
+        card.dataTransfer.setData("text", card.target.id);
+    }
 }
 
 var running = false; //Global variable.
@@ -101,16 +109,25 @@ function allowDrop(card) //Allows the card boxes to accept cards.
     running = false;
 }
 
+var index;
 function drop(card) //Once the card has been dropped to a valid box, it moves that node to its new parent.
 {
     card.preventDefault();
     var data = card.dataTransfer.getData("text"); //Gets the ID of card from the drag(card) function.
+    index = data[data.length - 1];
     var goal = card.target.parentNode.lastChild.id; //Retrieves the ID of the goal it was dragged to.
     var goalIndex = parseInt(goal[goal.length - 1]); //Extracts the goal number from its ID.
-    card.target.appendChild(document.getElementById(data)); //Moves the dragged card to the box in which it was dropped.
-    incrementScore(0, 1, goalIndex);
+    if(data != '')
+    {
+        card.target.appendChild(document.getElementById(data)); //Moves the dragged card to the box in which it was dropped.
+        incrementScore(0, 1, goalIndex);
         //TO DO: Make that function call have variable parameters.
+    }
+    cardPlayed = true;
 }
+
+// DROP FUCNTION for CARD STARTING ROW:
+// - end with cardPlayed = false
 
 function start() {
 	generateGoals();
@@ -129,4 +146,14 @@ function incrementScore(p, n, g) //A function to increment the score of a player
 function selectCard(cardID) //A function to run when a card is selected.
 {
     document.getElementById(cardID).className = 'selected';
+}
+
+var cardPlayed;
+
+function endTurn()
+{
+    yourTurn = false;
+    Cards.P[index] = true;
+    cardPlayed = false;
+    
 }
