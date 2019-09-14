@@ -15,7 +15,8 @@ var Game = {
     T: [0,0], //The total score for each player.
 	tno: 1, // The turn number, initialised to 1. Increment during gameplay
 	//mtno: 10, //The maximum number of turns
-    PlayerCard: [new Cards(), new Cards()]
+    // **Do something like this, too**
+    //PlayerCard: [new Cards(), new Cards()]
 };
 
 var Cards = {
@@ -75,8 +76,6 @@ function generateCards(number) {
         }
       document.getElementById('cards').innerHTML = html; //Inserts the above HTML into the 'cards' div.
 	//}
-	
-	
 }
 
 function drag(card) //Collects the ID of the card as it begins to get dragged.
@@ -88,40 +87,28 @@ function drag(card) //Collects the ID of the card as it begins to get dragged.
     }
 }
 
-var running = false; //Global variable.
-
 function allowDrop(card) //Allows the card boxes to accept cards.
 {
-    running = true;
     var goal = card.target.parentNode.lastChild;
     var goalIndex = goal.id[goal.id.length-1];
     if(Game.S[0][goalIndex] < Game.V[0][goalIndex])
     {
         card.preventDefault();
     }
-    //This next bit tries to make the goals get bigger when a card is about to be dropped on its corresponding box, but this is a bit buggy.
-    goal.className += ' highlighted';
-    setTimeout(function(){
-               if(!running){
-                goal.classList.remove('highlighted');
-               }
-               }, 1000);
-    running = false;
 }
 
 var index;
+var goalIndex;
 function drop(card) //Once the card has been dropped to a valid box, it moves that node to its new parent.
 {
     card.preventDefault();
     var data = card.dataTransfer.getData("text"); //Gets the ID of card from the drag(card) function.
     index = data[data.length - 1];
     var goal = card.target.parentNode.lastChild.id; //Retrieves the ID of the goal it was dragged to.
-    var goalIndex = parseInt(goal[goal.length - 1]); //Extracts the goal number from its ID.
+    goalIndex = parseInt(goal[goal.length - 1]); //Extracts the goal number from its ID.
     if(data != '')
     {
         card.target.appendChild(document.getElementById(data)); //Moves the dragged card to the box in which it was dropped.
-        incrementScore(0, 1, goalIndex);
-        //TO DO: Make that function call have variable parameters.
     }
     cardPlayed = true;
 }
@@ -152,8 +139,17 @@ var cardPlayed;
 
 function endTurn()
 {
+    if(goalIndex == null)
+    {
+        //Error message goes here
+    }
+    
+    incrementScore(0, 1, goalIndex);
+    //TO DO: Make that function call have variable parameters.
+    
     yourTurn = false;
     Cards.P[index] = true;
     cardPlayed = false;
+    goalIndex = null;
     
 }
