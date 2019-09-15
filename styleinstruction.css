@@ -10,30 +10,31 @@
 
 
 .title {
-    margin-top: 100px;
+    margin-top: 3%;
     /* font: 50px; */
     font-size: 200%;
     text-align:center;
 
 }
 
-li{
-    text-align:left;
-    font-size: 80%;
 
-
-}
 .rules {
     margin-left: 30%;
     margin-right: 30%;
-    margin-top: 3%;
+    margin-top: 1%;
     font-size: 160%;
-    text-align:center;
+    text-align:left;
 
 }
 
 .play{
     text-align:center;
-    margin-top: 10%;
-    font-size: 300%;
+    margin-top: 3%;
+    font-size: 400%;
+}
+
+.small{
+    text-align:left;
+    font-size: 80%;
+
 }
