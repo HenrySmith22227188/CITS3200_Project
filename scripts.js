@@ -122,11 +122,11 @@ function start() {
 	generateCards();
 }
 
-function incrementScore(p, n, g) //A function to increment the score of a player at a particular goal. p = player [0 or 1], n = score to increment by [int], g = the goal [int] to add points to.
+function incrementScore(player, scoreToAdd, goalNumber) //A function to increment the score of a player at a particular goal. p = player [0 or 1], n = score to increment by [int], g = the goal [int] to add points to.
 {
-    if(Game.goalOpen[g]) //Only open goals can have cards allocated to them.
+    if(Game.goalOpen[goalNumber]) //Only open goals can have cards allocated to them.
     {
-        Game.progress[p][g] += n;
+        Game.progress[player][goalNumber] += scoreToAdd;
         updateGoals();
     }
 }
