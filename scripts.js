@@ -1,21 +1,20 @@
 //This file contains all the scripts necessary to run the functionality of the game.
 
-
 var cardPlayed; 
 var index;
 var goalIndex;
 
 var Game = {
     duration: 100, //The number of remaining turns in a trial.
-    goalValue: [[10,8,5,3],[10,8,5,3]], //An array holding one array for each player, which represents the value of each goal to that player.
+    goalValue: data.goalValue, //An array holding one array for each player, which represents the value of each goal to that player.
     
-    valueToTie: 5, //The value gained by each player in the result of a tie for any goal.
-    probabilityOfProgress: [0.9, 0.9], //The likelihood of making progess towards a goal (i.e. of the card not disintegrating) for each player.
-    progress: [[0,0,0,0],[0,0,0,0]], //The progess made by each player towards each goal.
+    valueToTie: 0, //The value gained by each player in the result of a tie for any goal.
+    probabilityOfProgress: data.probabilityOfProgress, //The likelihood of making progess towards a goal (i.e. of the card not disintegrating) for each player.
+    progress: data.progress, //The progess made by each player towards each goal.
     
     //** The following can probably exist outside of the Game object, since we don't need to report them? **
-    goalOpen: [true, true, true, true], //The completedness of the goals. ** DELETE THIS **
-    score: [0,0], //The total score for each player.
+    goalOpen: data.goalOpen, //The completedness of the goals. ** DELETE THIS **
+    score: data.score, //The total score for each player.
 	turnNumber: 1, // The turn number, initialised to 1. Increment during gameplay
 	//mtno: 10, //The maximum number of turns
     // **Do something like this, too**
@@ -23,7 +22,7 @@ var Game = {
 };
 
 var Cards = {
-	count: 5, //The number of cards avaliable to each player at start of game
+	count: data.numberOfCards, //The number of cards avaliable to each player at start of game
 	value:  new Array(), //An array to hold the value of each card
 	image:	new Array(), //An array to hold the image for each card corresponding to its value
     playable:  new Array() //An array to hold if the card is playable
@@ -56,7 +55,7 @@ function updateGoals()
 {
     for(var i=0; i<Game.numberOfGoals[0]; i++){
         document.getElementById("score"+i.toString()).innerHTML = Game.progress[0][i];
-        if((Game.progress[0][i] >= Game.goalValue[0][i])&&(Game.goalOpen[i])) //Recognises when a player has reached the value for a goal.
+        if(Game.goalOpen[i]) //Recognises when a goal is Open
         {
             Game.goalOpen[i] = false;
             Game.score[0] += Game.goalValue[0][i];
