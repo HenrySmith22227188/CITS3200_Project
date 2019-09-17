@@ -5,7 +5,7 @@ var index;
 var goalIndex;
 
 var Game = {
-    duration: 100, //The number of remaining turns in a trial.
+    duration: data.numberOfCards, //The number of remaining turns in a trial.
     goalValue: data.goalValue, //An array holding one array for each player, which represents the value of each goal to that player.
     
     valueToTie: 0, //The value gained by each player in the result of a tie for any goal.
@@ -13,9 +13,9 @@ var Game = {
     progress: data.progress, //The progess made by each player towards each goal.
     
     //** The following can probably exist outside of the Game object, since we don't need to report them? **
-    goalOpen: data.goalOpen, //The completedness of the goals. ** DELETE THIS **
+    goalOpen: data.goalOpen, //The completedness of the goals.
     score: data.score, //The total score for each player.
-	turnNumber: 1, // The turn number, initialised to 1. Increment during gameplay
+	turnNumber: 0, // The turn number, initialised to 1. Increment during gameplay
 	//mtno: 10, //The maximum number of turns
     // **Do something like this, too**
     //PlayerCard: [new Cards(), new Cards()]
@@ -38,7 +38,7 @@ function generateGoals() //A function to add HTML corresponding to the amount of
     {
         var ii = i.toString(); //To be inserted into the HTML to find the right goals.
         
-        if(!(Game.goalOpen[i]))
+        if(!(Game.goalOpen[0][i]))
         {
             var extraClass = ' completed';
         } else {
@@ -55,9 +55,9 @@ function updateGoals()
 {
     for(var i=0; i<Game.numberOfGoals[0]; i++){
         document.getElementById("score"+i.toString()).innerHTML = Game.progress[0][i];
-        if(Game.goalOpen[i]) //Recognises when a goal is Open
+        if(!Game.goalOpen[0][i]) //Recognises when a goal is Open
         {
-            Game.goalOpen[i] = false;
+            Game.goalOpen[0][i] = false;
             Game.score[0] += Game.goalValue[0][i];
             document.getElementById('YourScore').innerHTML = 'Your score: ' + (Game.score[0]).toString();
         }
@@ -91,12 +91,10 @@ function drag(card) //Collects the ID of the card as it begins to get dragged.
 
 function allowDrop(card) //Allows the card boxes to accept cards.
 {
-    var goal = card.target.parentNode.lastChild;
+    // TODO prevent players from placing cards in each others lanes
+	var goal = card.target.parentNode.lastChild;
     var goalIndex = goal.id[goal.id.length-1];
-    if(Game.progress[0][goalIndex] < Game.goalValue[0][goalIndex])
-    {
-        card.preventDefault();
-    }
+    card.preventDefault();
 }
 
 function drop(card) //Once the card has been dropped to a valid box, it moves that node to its new parent.
@@ -123,7 +121,7 @@ function start() {
 
 function incrementScore(player, scoreToAdd, goalNumber) //A function to increment the score of a player at a particular goal. p = player [0 or 1], n = score to increment by [int], g = the goal [int] to add points to.
 {
-    if(Game.goalOpen[goalNumber]) //Only open goals can have cards allocated to them.
+    if(Game.goalOpen[player][goalNumber]) //Only open goals can have cards allocated to them.
     {
         Game.progress[player][goalNumber] += scoreToAdd;
         updateGoals();
@@ -137,17 +135,25 @@ function selectCard(cardID) //A function to run when a card is selected.
 
 function endTurn()
 {
-    if(goalIndex == null)
-    {
-        //Error message goes here
-    }
-    
-    incrementScore(0, 1, goalIndex);
-    //TO DO: Make that function call have variable parameters.
-    
-    yourTurn = false;
-    Cards.playable[index] = true;
-    cardPlayed = false;
-    goalIndex = null;
-    
+	if(Game.turnNumber < Game.duration) {
+		if(goalIndex == null)
+		{
+			alert("Place a card"); //Error message goes here
+		}
+		else 
+		{
+			Game.turnNumber++;
+			if(Game.turnNumber >= Game.Duration)
+			{
+				alert("Game Over");
+			}
+			incrementScore(0, 1, goalIndex);
+			//TO DO: Make that function call have variable parameters.
+			
+			yourTurn = false;
+			Cards.playable[index] = true;
+			cardPlayed = false;
+			goalIndex = null;
+		}
+	}	
 }

@@ -8,7 +8,10 @@
 			[0,0,0,0],
 			[0,0,0,0]
 		],
-		"goalOpen": [true, true, true, true],
+		"goalOpen": [
+			[true, true, true, true],
+			[true, true, true, true]
+		],
 		"numberOfCards": 5,
 		"probabilityOfProgress": [1, 1],
 		"showOpponentProgress": false,
