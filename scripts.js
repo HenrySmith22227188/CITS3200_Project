@@ -14,8 +14,8 @@ var Game = {
     
     //** The following can probably exist outside of the Game object, since we don't need to report them? **
     goalOpen: data.goalOpen, //The completedness of the goals.
-    score: data.score, //The total score for each player.
-	turnNumber: 0, // The turn number, initialised to 1. Increment during gameplay
+    score: [0, 0], //The total score for each player.
+	turnNumber: 0, // The turn number, initialised to 0. Increment during gameplay
 	//mtno: 10, //The maximum number of turns
     // **Do something like this, too**
     //PlayerCard: [new Cards(), new Cards()]
@@ -44,17 +44,28 @@ function generateGoals() //A function to add HTML corresponding to the amount of
     }
 }
 
-function updateGoals()
+function updateScore() // A function to calculate the score, it also updates the progress displayed in the middle of the board
 {
-    for(var i=0; i<Game.numberOfGoals[0]; i++){
-        document.getElementById("score"+i.toString()).innerHTML = Game.progress[0][i];
-        if(!Game.goalOpen[0][i]) //Recognises when a goal is Open
-        {
-            Game.goalOpen[0][i] = false;
-            Game.score[0] += Game.goalValue[0][i];
-            document.getElementById('YourScore').innerHTML = 'Your score: ' + (Game.score[0]).toString();
-        }
+	Game.score = [0, 0];
+    for(var i=0; i<Game.numberOfGoals[0]; i++)
+	{   
+		document.getElementById("score"+i.toString()).innerHTML = Game.progress[0][i];
+		
+		if(Game.progress[1][i] < Game.progress[0][i]) {
+			Game.score[0] += Game.goalValue[0][i];
+		}
+		else if(Game.progress[1][i] > Game.progress[0][i]) {
+			Game.score[1] += Game.goalValue[1][i];
+		}
+		else 
+		{
+			Game.score[0] += Game.valueToTie;
+			Game.score[1] += Game.valueToTie;
+		}
+		
+		document.getElementById('YourScore').innerHTML = 'Your score: ' + (Game.score[0]).toString();
     }
+	
 }
 
 function generateCards(number) {
@@ -62,7 +73,7 @@ function generateCards(number) {
 	//for (var player in cards) {
 		//insert card placeholder for each player
 		for (var i = 0; i<Cards.count; i++) {
-			Cards.value[i] = 10;
+			Cards.value[i] = 1;
 			Cards.image[i] = new Image();
 			Cards.image[i].src = 'https://cdn.pixabay.com/photo/2015/08/11/11/57/spades-884197_960_720.png'; //Will need to update code so as to allow different types of cards to become sourced
 		
@@ -87,25 +98,29 @@ function drag(card) //Collects the ID of the card as it begins to get dragged.
 
 function allowDrop(card) //Allows the card boxes to accept cards.
 {
-    // TODO prevent players from placing cards in each others lanes
 	var goal = card.target.parentNode.lastChild;
-    var goalIndex = goal.id[goal.id.length-1];
-    card.preventDefault();
+    var goalIndex = goal.id[goal.id.length-1]; // TODO prevent players from placing cards in each others lanes
+	if(Game.goalOpen[0][goalIndex]) 
+	{
+		card.preventDefault();
+	}
+    
 
 }
 
 function drop(card) //Once the card has been dropped to a valid box, it moves that node to its new parent.
 {
-    card.preventDefault();
+	card.preventDefault();
     var data = card.dataTransfer.getData("text"); //Gets the ID of card from the drag(card) function.
     if(data != '')
     {
         index = data[data.length - 1];
         var goal = card.target.parentNode.lastChild.id; //Retrieves the ID of the goal it was dragged to.
         goalIndex = parseInt(goal[goal.length - 1]); //Extracts the goal number from its ID.
-        card.target.appendChild(document.getElementById(data)); //Moves the dragged card to the box in which it was dropped.
+		card.target.appendChild(document.getElementById(data)); //Moves the dragged card to the box in which it was dropped.
+		    
     }
-    cardPlayed = true;
+	cardPlayed = true;
 }
 
 // DROP FUCNTION for CARD STARTING ROW:
@@ -121,7 +136,7 @@ function incrementScore(player, scoreToAdd, goalNumber) //A function to incremen
     if(Game.goalOpen[player][goalNumber]) //Only open goals can have cards allocated to them.
     {
         Game.progress[player][goalNumber] += scoreToAdd;
-        updateGoals();
+        updateScore();
     }
 }
 
@@ -142,11 +157,12 @@ function endTurn()
 			Game.turnNumber++;
             console.log("Turn: "+Game.turnNumber);
             console.log("Duration: "+Game.duration);
+			incrementScore(0, 1, goalIndex);
 			if(Game.turnNumber >= Game.duration)
 			{
 				alert("Game Over");
 			}
-			incrementScore(0, 1, goalIndex);
+			
 			//TO DO: Make that function call have variable parameters.
 			
 			yourTurn = false;
