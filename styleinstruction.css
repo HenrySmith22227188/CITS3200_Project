@@ -1,40 +1,71 @@
-
 * {
-    /* font-family: "Arial Black"; */
-    background-color: darkslategray;
-    color:white;
-    font: "Lucida Grande","Helvetica Neue", sans-serif;
-    
-    
+  /* font-family: "Arial Black"; */
+  background-color: darkslategray;
+  color: white;
+  font: "Lucida Grande", "Helvetica Neue", sans-serif;
 }
-
 
 .title {
-    margin-top: 3%;
-    /* font: 50px; */
-    font-size: 200%;
-    text-align:center;
-
+  margin-top: 3%;
+  /* font: 50px; */
+  font-size: 200%;
+  text-align: center;
 }
 
-
-.rules {
-    margin-left: 30%;
-    margin-right: 30%;
-    margin-top: 1%;
-    font-size: 160%;
-    text-align:left;
-
+#rules {
+  background: 0%;
+  margin-left: 30%;
+  margin-right: 30%;
+  margin-top: 10%;
+  font-size: 140%;
+  text-align: left;
 }
 
-.play{
-    text-align:center;
-    margin-top: 3%;
-    font-size: 400%;
+.play {
+  text-align: center;
+  margin-top: 15%;
+  font-size: 400%;
 }
 
-.small{
-    text-align:left;
-    font-size: 80%;
+.small {
+  text-align: left;
+  font-size: 80%;
+}
 
+.help {
+  text-align: center;
+}
+.button {
+  margin-top: 10%;
+  background-color: green;
+  text-align: center;
+  border: none;
+  text-decoration: aliceblue;
+  display: inline-block;
+  font-size: 200%;
+  padding: 15px 32px;
+}
+
+#overlay {
+  position: fixed;
+  display: none;
+  width: 100%;
+  height: 100%;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  z-index: 2;
+  cursor: pointer;
+}
+
+#text {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  color: white;
+  transform: translate(-50%, -50%);
+  -ms-transform: translate(-50%, -50%);
+  -webkit-transform: translate(-50%, -50%);
 }
