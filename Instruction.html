@@ -22,15 +22,25 @@
     <!-- CSS -->
     <link rel="stylesheet" type="text/css" href="styleinstruction.css" />
 
-    <!-- planning to add a help button which shows the title and the rules -->
+    <!-- added a help button which shows the rules -->
     <!-- JavaScript -->
     <script src="scripts.js"></script>
   </head>
 
-  <body class="body">
-    <div class="title">
-      <h1>Multiple Goal Pursuit Game</h1>
+  <body id="body">
+    <div id="background">
+      <div class="title">
+        <h1>Multiple Goal Pursuit Game</h1>
+      </div>
+
+      <div class="help">
+        <button class="button" onclick="overlay()">Help</button>
+      </div>
+      <div class="play">
+        <a href="base.html" style="color: inherit" > Play Game </a>
+      </div>
     </div>
+
     <div id="overlay" onclick="overlay()">
       <div id="rules">
         <p1>
@@ -85,12 +95,6 @@
           </div>
         </p1>
       </div>
-    </div>
-    <div class="help">
-      <button class="button" onclick="overlay()">Help</button>
-    </div>
-    <div class="play">
-      <a href="base.html"> Play Game </a>
     </div>
   </body>
 </html>

@@ -1,4 +1,4 @@
-.body {
+#body {
   /* font-family: "Arial Black"; */
   background-color: darkslategray;
   color: white;
@@ -23,9 +23,9 @@
 
 .play {
   text-align: center;
-  margin-top: 25%;
-  font-size: 400%;
-  color: white;
+  margin-top: 10%;
+  font-size: 600%;
+  /* color: white; */
 }
 
 .small {
@@ -44,12 +44,25 @@
   -webkit-transform: translate(-50%, -50%); */
   background-color: green;
   text-align: center;
-  border: none;
+  border: 1px solid black;
+  font: bold 13px arial, helvetica, sans-serif;
   text-decoration: aliceblue;
   color: white;
   display: inline-block;
+  border-radius: 10px;
   font-size: 200%;
   padding: 15px 32px;
+  background-clip: padding-box;
+  cursor: pointer;
+}
+
+.button:hover{
+  background-color: darkgreen;
+}
+
+.button:active {
+	position:relative;
+	top:1px;
 }
 
 #overlay {
@@ -61,7 +74,7 @@
   left: 0;
   right: 0;
   bottom: 0;
-  background-color: rgba(0, 0, 0, 0.5);
+  background-color: rgba(0, 0, 0, 0.6);
 
   z-index: 2;
   cursor: pointer;
@@ -75,4 +88,12 @@
   transform: translate(-50%, -50%);
   -ms-transform: translate(-50%, -50%);
   -webkit-transform: translate(-50%, -50%);
+}
+
+.blur {
+  -webkit-filter: blur(8px);
+  -moz-filter: blur(8px);
+  -o-filter: blur(8px);
+  -ms-filter: blur(8px);
+  filter: blur(8px);
 }

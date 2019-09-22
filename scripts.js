@@ -186,9 +186,12 @@ function endTurn() {
 // function that triggers the overlay when the help button is depressed.
 function overlay() {
   var x = document.getElementById("overlay");
+  var containerElement = document.getElementById("backgroundblur");
   if (x.style.display == "none") {
     x.style.display = "block";
+    containerElement.setAttribute("class", "blur");
   } else {
     x.style.display = "none";
+    containerElement.setAttribute("class", null);
   }
 }
