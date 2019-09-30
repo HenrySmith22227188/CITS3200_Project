@@ -119,8 +119,9 @@ function drag(card) {
 function allowDrop(card) {
   //Allows the card boxes to accept cards.
   var goal = card.target.parentNode.lastChild;
-  var goalIndex = goal.id[goal.id.length - 1]; // TODO prevent players from placing cards in each others lanes
-  if (Game.goalOpen[0][goalIndex]) {
+  var goalIndex = goal.id[goal.id.length - 1];
+  var isPlayerbox = card.target.className === "box playerBox"; // Checks class name to determine if this is the players box
+  if (Game.goalOpen[0][goalIndex] && isPlayerbox ) {
     card.preventDefault();
   }
 }
