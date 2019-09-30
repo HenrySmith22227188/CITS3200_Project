@@ -28,12 +28,12 @@ var Cards = {
   playable: new Array() //An array to hold if the card is playable
 };
 
-Game.numberOfGoals = [Game.goalValue[0].length, Game.goalValue[1].length]; //An array holding the number of goals available for each player.
+Game.numberOfGoals = Game.goalValue[0].length; //The number of goals.
 
 function generateGoals() {
   //A function to add HTML corresponding to the amount of goals (which is defined in the value for G in the Game object).
   var html = "";
-  var numberOfGoals = Game.numberOfGoals[0];
+  var numberOfGoals = Game.numberOfGoals;
   for (
     var i = 0;
     i < numberOfGoals;
@@ -63,7 +63,7 @@ function generateGoals() {
 function updateScore() {
   // A function to calculate the score, it also updates the progress displayed in the middle of the board
   Game.score = [0, 0];
-  for (var i = 0; i < Game.numberOfGoals[0]; i++) {
+  for (var i = 0; i < Game.numberOfGoals; i++) {
     document.getElementById("score" + i.toString()).innerHTML =
       Game.progress[0][i];
 
@@ -169,18 +169,56 @@ function endTurn() {
       console.log("Turn: " + Game.turnNumber);
       console.log("Duration: " + Game.duration);
       incrementScore(0, 1, goalIndex);
-      if (Game.turnNumber >= Game.duration) {
-        alert("Game Over");
-      }
-
-      //TO DO: Make that function call have variable parameters.
 
       yourTurn = false;
       Cards.playable[index] = true;
       cardPlayed = false;
       goalIndex = null;
+        
+      if (Game.turnNumber >= Game.duration) {
+        endGame();
+        alert("Game Over");
+      }
     }
   }
+}
+
+function endGame() {
+    console.log("ENDGAME");
+    var playerScore = 0;
+    var opponentScore = 0;
+    for(var i=0; i < Game.numberOfGoals; i++)
+    {
+        console.log(Game.progress);
+        if(Game.progress[0][i] > Game.progress[1][i])
+        {
+            playerScore += Game.goalValue[0][i];
+        } else if(Game.progress[0][i] == Game.progress[1][i]) {
+            playerScore += Game.valueToTie;
+            opponentScore += Game.valueToTie;
+        } else {
+            opponentScore += Game.goalValue[1][i];
+        }
+    }
+    console.log("playerscore: "+playerScore);
+    console.log("opponentscore: "+opponentScore);
+    var results = document.getElementById("results");
+    results.innerHTML = '<h1>RESULTS</h1><hr>'
+    + '<p>You scored: ' + playerScore.toString() +  '.</p>'
+    + '<p>Your opponent scored: ' + opponentScore.toString() +  '.</p>';
+    
+    if(playerScore > opponentScore)
+    {
+        results.innerHTML += '<h3>You won!</h3>';
+    } else if(playerScore == opponentScore) {
+        results.innerHTML += '<h3>It\'s a draw!</h3>';
+    } else {
+        results.innerHTML += '<h3>You lost!</h3>';
+    }
+    
+    document.getElementById("endTurn").style.display = 'none';
+    results.style.display = 'block';
+    
 }
 
 // function that triggers the overlay when the help button is depressed.

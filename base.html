@@ -37,6 +37,8 @@
   <body onload="start();">
     <div id="backgroundblur">
       <!-- **currently under work blurring the background causes background to shrink  -->
+      <div id="results">
+      </div>
       <div class="left half">
         <h3 id="YourScore">Your score: 0</h3>
       </div>
@@ -44,7 +46,8 @@
       <div id="goals">
         <!-- JavaScript will add the HTML for each goal -->
       </div>
-      <div class="endTurnButton" onclick="endTurn();">End Turn</div>
+      
+      <div id="endTurn" class="endTurnButton" onclick="endTurn();">End Turn</div>
       <div id="cards" class="cards">
         <!-- <img id="card0" src="https://cdn.pixabay.com/photo/2015/08/11/11/57/spades-884197_960_720.png" onclick="selectCard('card0');"/> <!-- **Image for testing only** -->
       </div>
@@ -91,6 +94,7 @@
             </li>
 
             <br />The player with the highest points at the end wins the game.
+            <hr>
           </div>
 
           <br />Basic Rules:
@@ -106,6 +110,7 @@
               their turn.
             </li>
             <li>A trial will end when both players have no cards left.</li>
+            <hr>
           </div>
         </p1>
       </div>
