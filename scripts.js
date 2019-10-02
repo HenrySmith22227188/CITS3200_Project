@@ -217,7 +217,7 @@ function endGame() {
         results.innerHTML += '<h3>You lost!</h3>';
     }
     
-    document.getElementById("endTurn").style.display = 'none';
+    document.getElementById("backgroundblur").style.display = 'none';
     results.style.display = 'block';
     
 }
