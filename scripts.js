@@ -5,6 +5,7 @@ var index;
 var goalIndex;
 
 var Game = {
+  hasPickedUp: -1,
   duration: data.numberOfCards, //The number of remaining turns in a trial.
   goalValue: data.goalValue, //An array holding one array for each player, which represents the value of each goal to that player.
 
@@ -107,22 +108,26 @@ function generateCards(number) {
 
 function drag(card) {
   //Collects the ID of the card as it begins to get dragged.
-  //if(!cardPlayed) TODO make this not block the one card from being moved before the turn has ended.
-  //{
   index = parseInt(card.target.id[card.target.id.length - 1]);
-  if (Cards.playable[index] == false) {
+  if(Game.hasPickedUp == -1) {
+	  Game.hasPickedUp = index;
+  }
+  if (Cards.playable[index] == false && Game.hasPickedUp == index) {
     card.dataTransfer.setData("text", card.target.id);
+	console.log("ping");
   }
   //}
 }
 
 function allowDrop(card) {
   //Allows the card boxes to accept cards.
-  var goal = card.target.parentNode.lastChild;
-  var goalIndex = goal.id[goal.id.length - 1];
-  var isPlayerbox = card.target.className === "box playerBox"; // Checks class name to determine if this is the players box
-  if (Game.goalOpen[0][goalIndex] && isPlayerbox ) {
-    card.preventDefault();
+  if (Cards.playable[index] == false && Game.hasPickedUp == index) {
+	var goal = card.target.parentNode.lastChild;
+	var goalIndex = goal.id[goal.id.length - 1];
+	var isPlayerbox = card.target.className === "box playerBox"; // Checks class name to determine if this is the players box
+	if (Game.goalOpen[0][goalIndex] && isPlayerbox ) {
+		card.preventDefault();
+	}
   }
 }
 
@@ -172,13 +177,13 @@ function endTurn() {
       incrementScore(0, 1, goalIndex);
 
       yourTurn = false;
-      Cards.playable[index] = true;
+      Cards.playable[Game.hasPickedUp] = true;
       cardPlayed = false;
       goalIndex = null;
+	  Game.hasPickedUp = -1;
         
       if (Game.turnNumber >= Game.duration) {
         endGame();
-        alert("Game Over");
       }
     }
   }
