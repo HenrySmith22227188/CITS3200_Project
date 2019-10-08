@@ -95,6 +95,8 @@ function updateScore() {
 
     document.getElementById("YourScore").innerHTML =
       "Your score: " + Game.score[0].toString();
+    document.getElementById("OpponentScore").innerHTML =
+      "Opponent score: " + Game.score[1].toString();
   }
 }
 

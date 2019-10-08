@@ -62,7 +62,7 @@
 
 #YourScore {
   display: block;
-  width: 22%;
+  width: 25%;
   margin: auto;
   margin-top: 20px;
   color: white;
@@ -71,6 +71,21 @@
   border-color: #16a535;
   border-radius: 5px;
   text-align: center;
+  padding: 2px;
+}
+
+#OpponentScore {
+  display: block;
+  width: 25%;
+  margin: auto;
+  margin-top: 20px;
+  color: white;
+  background-color: #1c1c1c;
+  border-style: solid;
+  border-color: #d40000;
+  border-radius: 5px;
+  text-align: center;
+  padding: 2px;
 }
 
 #goals {
