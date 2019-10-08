@@ -5,7 +5,7 @@ var index;
 var goalIndex;
 
 var Game = {
-  hasPickedUp: -1,
+  hasPickedUp: -1, //indicator as to if the player has placed a card, if they have the value is the id of the card else its value is -1.
   duration: data.numberOfCards, //The number of remaining turns in a trial.
   goalValue: data.goalValue, //An array holding one array for each player, which represents the value of each goal to that player.
 
@@ -16,9 +16,8 @@ var Game = {
   //** The following can probably exist outside of the Game object, since we don't need to report them? **
   goalOpen: data.goalOpen, //The completedness of the goals.
   score: [0, 0], //The total score for each player.
-  turnNumber: 0 // The turn number, initialised to 0. Increment during gameplay
-  //mtno: 10, //The maximum number of turns
-  // **Do something like this, too**
+  turnNumber: 0, // The turn number, initialised to 0. Increment during gameplay
+  cardImage: "https://cdn.pixabay.com/photo/2015/08/11/11/57/spades-884197_960_720.png"
   //PlayerCard: [new Cards(), new Cards()]
 };
 
@@ -46,10 +45,10 @@ function generateGoals() {
 	var imagesProgressOpponent = '';
 	
 	for(var j = 0; j < Game.progress[0][i]; j++) {
-		imagesProgressPlayer += '<img src="https://cdn.pixabay.com/photo/2015/08/11/11/57/spades-884197_960_720.png">';
+		imagesProgressPlayer += '<img src=' + Game.cardImage + '>';
 	}
 	for(var j = 0; j < Game.progress[1][i]; j++) {
-		imagesProgressOpponent += '<img src="https://cdn.pixabay.com/photo/2015/08/11/11/57/spades-884197_960_720.png">';
+		imagesProgressOpponent += '<img src=' + Game.cardImage + '>';
 	}
 	
     html +=
@@ -107,8 +106,7 @@ function generateCards(number) {
   for (var i = 0; i < Cards.count; i++) {
     Cards.value[i] = 1;
     Cards.image[i] = new Image();
-    Cards.image[i].src =
-      "https://cdn.pixabay.com/photo/2015/08/11/11/57/spades-884197_960_720.png"; //Will need to update code so as to allow different types of cards to become sourced
+    Cards.image[i].src = Game.cardImage
 
     html +=
       '<img id="card' +
