@@ -42,12 +42,27 @@ function generateGoals() {
   ) {
     var ii = i.toString(); //To be inserted into the HTML to find the right goals.
 
+	var imagesProgressPlayer = '';
+	var imagesProgressOpponent = '';
+	
+	for(var j = 0; j < Game.progress[0][i]; j++) {
+		imagesProgressPlayer += '<img src="https://cdn.pixabay.com/photo/2015/08/11/11/57/spades-884197_960_720.png">';
+	}
+	for(var j = 0; j < Game.progress[1][i]; j++) {
+		imagesProgressOpponent += '<img src="https://cdn.pixabay.com/photo/2015/08/11/11/57/spades-884197_960_720.png">';
+	}
+	
     html +=
       '<div><div class="player value"><h1>' +
       Game.goalValue[0][i].toString() +
       '</h1></div><div class="opponent value"><h1>' +
       Game.goalValue[1][i].toString() +
-      '</h1></div><div class="box playerBox" ondrop="drop(event);" ondragover="allowDrop(event);"></div><div class="box opponentBox" ondrop="drop(event);" ondragover="allowDrop(event);"></div><div class="goal" id="goal' +
+	  
+      '</h1></div><div class="box playerBox" ondrop="drop(event);" ondragover="allowDrop(event);">' +
+	  imagesProgressPlayer +
+	  '</div><div class="box opponentBox" ondrop="drop(event);" ondragover="allowDrop(event);">' + 
+	  imagesProgressOpponent +
+	  '</div><div class="goal" id="goal' +
       ii +
       '"><div class="left score"><h3 id="score' +
       ii +
@@ -59,6 +74,7 @@ function generateGoals() {
 
     document.getElementById("goals").innerHTML = html;
   }
+  //document.getElementById("box playerBox").innerHTML = "cunt";
 }
 
 function updateScore() {
@@ -114,7 +130,6 @@ function drag(card) {
   }
   if (Cards.playable[index] == false && Game.hasPickedUp == index) {
     card.dataTransfer.setData("text", card.target.id);
-	console.log("ping");
   }
   //}
 }
@@ -139,7 +154,8 @@ function drop(card) {
     index = data[data.length - 1];
     var goal = card.target.parentNode.lastChild.id; //Retrieves the ID of the goal it was dragged to.
     goalIndex = parseInt(goal[goal.length - 1]); //Extracts the goal number from its ID.
-    card.target.appendChild(document.getElementById(data)); //Moves the dragged card to the box in which it was dropped.
+    console.log(card.target);
+	card.target.appendChild(document.getElementById(data)); //Moves the dragged card to the box in which it was dropped.
   }
   cardPlayed = true;
 }
