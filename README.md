@@ -8,6 +8,6 @@ To launch (for development/testing):
 - select import new study from top of page
 - select the zip from the project master file
 
-For all futher development files must be editted and uploaded once as normal and once as the export study from jatos
+For all futher development files must be editted and uploaded once raw and once as the exported study from JATOS
 - you can export a study by selecting the study from jatos
 - and clicking export
