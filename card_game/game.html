@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+
+<!--
+ AUTHORS:
+    Andrew Tuckey
+    James Pinto Correia
+    Henry Smith
+    Ricky Zhang
+    Akhil Naseem
+    Tony Guo
+ 
+ August - October, 2019
+ 
+ This file contains the layout of the web application (currently untitled).
+ 
+ ASSUMPTIONS:
+ - The players cannot begin the game with any goals completed.
+ -->
+
+<html>
+  <head>
+    <title>CITS3200</title>
+
+    <!-- icon -->
+    <link rel="shortcut icon" href="assets/bookmarkIcon.ico" type="image/x-icon" />
+
+    <!-- CSS -->
+    <link rel="stylesheet" type="text/css" href="css/game.css" />
+
+    <!-- Temp Input Javascript -->
+    <script type="text/javascript" src="int.js"></script> <!-- defines data object -->
+
+	<!-- JATOS -->
+	<script src="/assets/javascripts/jatos.js"></script>
+	
+    <!-- JavaScript -->
+	<script type="text/javascript" src="javascript/help_button.js"></script>
+    <script type="text/javascript" src="javascript/game.js"></script>
+  </head>
+
+  <body onload="start()">
+    <div id="backgroundblur">
+      <!-- **currently under work blurring the background causes background to shrink  -->
+      <div class="left half">
+        <h3 id="YourScore">Your score: 0</h3>
+      </div>
+      <div class="right half">
+        <h3 id="OpponentScore">Opponent score: 0</h3>
+      </div>
+      <div id="goals">
+        <!-- JavaScript will add the HTML for each goal -->
+      </div>
+      
+      <div id="endTurn" class="endTurnButton" onclick="endTurn();">End Turn</div>
+      <div id="cards" class="cards">
+      </div>
+      <div class="help">
+        <button class="helpbutton" onclick="overlay()">Help</button>
+      </div>
+    </div>
+    
+    <div id="results">
+    </div>
+
+    <!-- help button implementation -->
+
+    <div id="overlay" onclick="overlay()" style="display:none;">
+      <div id="rules">
+        <p>
+          How to Play:
+
+          <div class="small">
+            <br />
+            This is a two-player game. The aim of the game is to win as many
+            points as possible in multiple game-trials.
+            <div>
+              <br />
+              In each game-trial:
+            </div>
+            <li>Each row on the screen represents a 'goal'.</li>
+            <li>
+              Each 'goal' is worth a set of points (indicated on the left for
+              player-1 and on the right for player-2).
+            </li>
+            <li>
+              Each 'card' (at the bottom of the screen) holds a bidding-value
+              shown on the card.
+            </li>
+            <li>
+              Over multiple rounds, players place a single 'card' into a row to
+              bid on a 'goal'.
+            </li>
+            <li>
+              The numbers in the centre indicate the player's current total bid
+              on a ‘goal’.
+            </li>
+            <li>
+              After the last round, the player with the highest bid on a ‘goal’
+              wins the points specified on it.
+            </li>
+
+            <br />The player with the highest points at the end wins the game.
+            <hr>
+          </div>
+
+          <br />Basic Rules:
+          <div class="small">
+            <br />
+            <li>
+              Each player has a set number of cards, configured at the beginning
+              by the admin.
+            </li>
+            <li>A players must only place one card per round/turn.</li>
+            <li>
+              The other player's decision is only shown when both players end
+              their turn.
+            </li>
+            <li>A trial will end when both players have no cards left.</li>
+            <hr>
+          </div>
+        </p>
+      </div>
+    </div>
+  </body>
+</html>
