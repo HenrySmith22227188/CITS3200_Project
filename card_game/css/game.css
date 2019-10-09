@@ -171,20 +171,27 @@
 }
 
 .endTurnButton {
-  display: block;
+  display: none;
   width: 22%;
   margin-left: 25%;
   margin-top: 20px;
-  background-color: green;
+  background-color: #1c1c1c;
   border-style: solid;
   border-color: black;
   border-radius: 5px;
   text-align: center;
 }
 
-.endTurnButton:hover {
-  background-color: yellow;
+.ready {
+    display: block;
+    cursor: pointer;
+    background-color: green;
 }
+
+.ready:hover {
+  background-color: yellow;	  background-color: yellow;
+  cursor: pointer;
+}	}
 
 /* help button implementation below */
 

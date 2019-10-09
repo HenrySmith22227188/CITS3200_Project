@@ -156,6 +156,7 @@ function drop(card) {
 	card.target.appendChild(document.getElementById(data)); //Moves the dragged card to the box in which it was dropped.
   }
   cardPlayed = true;
+  document.getElementById("endTurn").className = "endTurnButton ready";
 }
 
 // DROP FUCNTION for CARD STARTING ROW:
@@ -195,7 +196,9 @@ function endTurn() {
       cardPlayed = false;
       goalIndex = null;
 	  Game.hasPickedUp = -1;
-        
+      document.getElementById("endTurn").className = "endTurnButton";
+	  
+	  
       if (Game.turnNumber >= Game.duration) {
         endGame();
       }
