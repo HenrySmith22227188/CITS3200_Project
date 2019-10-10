@@ -5,14 +5,14 @@
 			[10,8,5,3]
 		],
 		"progress": [
-			[1,0,1,0],
-			[0,1,0,1]
+			[0,0,0,0],
+			[0,0,0,0]
 		],
 		"goalOpen": [
 			[true, true, true, true],
 			[true, true, true, true]
 		],
-		"numberOfCards": 5,
+		"numberOfCards": 1,
 		"probabilityOfProgress": [1, 1],
 		"showOpponentProgress": false,
 		"opponent": false,
