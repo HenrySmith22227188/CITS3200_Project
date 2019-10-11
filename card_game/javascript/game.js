@@ -4,7 +4,7 @@ var cardPlayed;
 var index;
 var goalIndex;
 var Result;
-
+jatos.onLoad(timercount());
 var Game = {
   hasPickedUp: -1, //indicator as to if the player has placed a card, if they have the value is the id of the card else its value is -1.
   duration: data.numberOfCards, //The number of remaining turns in a trial.
@@ -38,19 +38,33 @@ Game.numberOfGoals = Game.goalValue[0].length; //The number of goals.
 //   goalValue: 3,
 //   progress: [[0, 1], [1, 0]]
 // };
-var results = (({ duration, goalValue, numberOfGoals }) => ({
+var interval;
+function stoptimer() {
+  clearInterval(interval);
+}
+
+function timercount() {
+  interval = setInterval(function() {
+    resultsdata.timespent++;
+  }, 1000);
+}
+
+var resultsdata = (({ duration, goalValue, numberOfGoals }) => ({
   duration,
   goalValue,
   numberOfGoals
 }))(Game);
+resultsdata.numberOfCards = resultsdata.duration;
+delete resultsdata.duration;
 
-results.player1 = [Game.progress[0]];
-results.player2 = [Game.progress[1]];
+resultsdata.player1 = [];
+resultsdata.player2 = [];
 // score at the end of a trial
 // first index = the player second index = opponent
-results.trialendscore = [];
+resultsdata.trialendscore = [];
+resultsdata.timespent = 0;
 
-// console.log(results);
+// console.log(resultsdata);
 
 function generateGoals() {
   //A function to add HTML corresponding to the amount of goals (which is defined in the value for G in the Game object).
@@ -105,10 +119,10 @@ function updateScore() {
 
     if (Game.progress[1][i] < Game.progress[0][i]) {
       Game.score[0] += Game.goalValue[0][i];
-      // results.player1.push(Game.score[0]);
+      // resultsdata.player1.push(Game.score[0]);
     } else if (Game.progress[1][i] > Game.progress[0][i]) {
       Game.score[1] += Game.goalValue[1][i];
-      // results.player2.push(Game.score[1]);
+      // resultsdata.player2.push(Game.score[1]);
     } else {
       Game.score[0] += Game.valueToTie;
       Game.score[1] += Game.valueToTie;
@@ -213,9 +227,12 @@ function endTurn() {
       console.log("Turn: " + Game.turnNumber);
       console.log("Duration: " + Game.duration);
       incrementScore(0, 1, goalIndex);
-      //10-10-2019(Tony) pushes the progress of each player to result every turn
-      results.player1.push(Game.progress[0]);
-      results.player2.push(Game.progress[1]);
+      //10-10-2019(Tony) pushes the progress of each player to result every turn- seems to be changing as the game goes on
+      var player1progress = JSON.parse(JSON.stringify(Game.progress[0]));
+      var player2progress = JSON.parse(JSON.stringify(Game.progress[1]));
+
+      resultsdata.player1.push(player1progress);
+      resultsdata.player2.push(player2progress);
 
       yourTurn = false;
       Cards.playable[Game.hasPickedUp] = true;
@@ -225,6 +242,9 @@ function endTurn() {
       document.getElementById("endTurn").className = "endTurnButton";
 
       if (Game.turnNumber >= Game.duration) {
+        stoptimer();
+        // console.log(interval);
+        resultsdata.timespent += " seconds in trial";
         endGame();
       }
     }
@@ -269,16 +289,19 @@ function endGame() {
   // var copyopponentscore = JSON.parse(JSON.stringify(opponentScore));
 
   // 10-10-2019 (Tony) to create the array for results at end of trial scores
+  // var copyplayerscore = Object.assign({},playerScore);
+  // var copyopponentscore = Object.assign({},opScore);
 
   document.getElementById("backgroundblur").style.display = "none";
   results.style.display = "block";
+  resultsdata.trialendscore.push(playerScore);
+  resultsdata.trialendscore.push(opponentScore);
+  setTimeout(jatos.startNextComponent(), 3000);
+  jatos.appendResultData(resultsdata); //this will be used to append results of this trail to the array of results of all trails
+  // I want it to wait for 3 seconds before the next component starts but it doesnt work
 
-  //jatos.appendResultData() //this will be used to append results of this trail to the array of results of all trails
-  setTimeout(jatos.startNextComponent(), 3000); // I want it to wait for 3 seconds before the next component starts but it doesnt work
   // 10-10-2019 (Tony) to create the array for results at end of trial scores
-  // found a bug where the below two functions stops the game from finishing if put on top
-  results.trialendscore.push(playerscore);
-  results.trialendscore.push(opponentscore);
+  // found a bug where the below two functions stops the game from finishing if put on top of the jatos.nextcomponent
 }
 
 // function that triggers the overlay when the help button is depressed.

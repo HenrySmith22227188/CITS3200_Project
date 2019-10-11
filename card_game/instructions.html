@@ -20,23 +20,27 @@
     <title>Game instructions</title>
 
     <!-- icon -->
-    <link rel="shortcut icon" href="assests/bookmarkIcon.ico" type="image/x-icon" />
+    <link
+      rel="shortcut icon"
+      href="assests/bookmarkIcon.ico"
+      type="image/x-icon"
+    />
 
     <!-- CSS -->
     <link rel="stylesheet" type="text/css" href="css/instructions.css" />
 
-	<!-- JATOS -->
-	<script src="/assets/javascripts/jatos.js"></script>
-	
+    <!-- JATOS -->
+    <script src="/assets/javascripts/jatos.js"></script>
+
     <!-- JavaScript -->
     <script src="javascript/help_button.js"></script>
+    <script src="javascript/game.js"></script>
   </head>
 
   <script>
-		
-		function nextComponent() {
-			jatos.onLoad(jatos.startNextComponent());
-		}
+    function nextComponent() {
+      jatos.onLoad(jatos.startNextComponent());
+    }
   </script>
 
   <body id="body">
@@ -46,12 +50,12 @@
       </div>
 
       <div class="help">
-     
-        <button class="button" onclick="nextComponent()"> Play Game </button>
-      
-		<button class="button" onclick="overlay()">Help</button>
-	  
-	  </div>
+        <button class="button" onclick="nextComponent()">
+          Play Game
+        </button>
+
+        <button class="button" onclick="overlay()">Help</button>
+      </div>
     </div>
 
     <div id="overlay" onclick="overlay()" style="display:none;">
