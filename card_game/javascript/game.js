@@ -4,11 +4,15 @@ var cardPlayed;
 var index;
 var goalIndex;
 var Result;
+var interval;
+
 jatos.onLoad(timercount());
+
 var Game = {
   hasPickedUp: -1, //indicator as to if the player has placed a card, if they have the value is the id of the card else its value is -1.
   duration: data.numberOfCards, //The number of remaining turns in a trial.
   goalValue: data.goalValue, //An array holding one array for each player, which represents the value of each goal to that player.
+  numberOfGoals: data.goalValue[0].length,
 
   valueToTie: 0, //The value gained by each player in the result of a tie for any goal.
   probabilityOfProgress: data.probabilityOfProgress, //The likelihood of making progess towards a goal (i.e. of the card not disintegrating) for each player.
@@ -30,15 +34,6 @@ var Cards = {
   playable: new Array() //An array to hold if the card is playable
 };
 
-Game.numberOfGoals = Game.goalValue[0].length; //The number of goals.
-// var Result;
-// var Game = {
-//   duration: 1,
-//   numberOfGoals: 2,
-//   goalValue: 3,
-//   progress: [[0, 1], [1, 0]]
-// };
-var interval;
 function stoptimer() {
   clearInterval(interval);
 }
@@ -49,32 +44,21 @@ function timercount() {
   }, 1000);
 }
 
-var resultsdata = (({ duration, goalValue, numberOfGoals }) => ({
-  duration,
-  goalValue,
-  numberOfGoals
-}))(Game);
-resultsdata.numberOfCards = resultsdata.duration;
-delete resultsdata.duration;
-
-resultsdata.player1 = [];
-resultsdata.player2 = [];
-// score at the end of a trial
-// first index = the player second index = opponent
-resultsdata.trialendscore = [];
-resultsdata.timespent = 0;
-
-// console.log(resultsdata);
+var resultsdata = {
+	numberOfCards: Cards.count, 
+	goalValue: Game.goalValue, 
+	numberOfGoals: Game.numberOfGoals,
+	player1: new Array(),
+	player2: new Array(),
+	timespent: 0,
+	trailendscore: new Array()
+};
 
 function generateGoals() {
   //A function to add HTML corresponding to the amount of goals (which is defined in the value for G in the Game object).
   var html = "";
-  var numberOfGoals = Game.numberOfGoals;
-  for (
-    var i = 0;
-    i < numberOfGoals;
-    i++ //Adds G goals for each player.
-  ) {
+  
+  for (var i = 0; i < Game.numberOfGoals; i++) {
     var ii = i.toString(); //To be inserted into the HTML to find the right goals.
 
     var imagesProgressPlayer = "";
@@ -119,15 +103,15 @@ function updateScore() {
 
     if (Game.progress[1][i] < Game.progress[0][i]) {
       Game.score[0] += Game.goalValue[0][i];
-      // resultsdata.player1.push(Game.score[0]);
+
     } else if (Game.progress[1][i] > Game.progress[0][i]) {
       Game.score[1] += Game.goalValue[1][i];
-      // resultsdata.player2.push(Game.score[1]);
+
     } else {
       Game.score[0] += Game.valueToTie;
       Game.score[1] += Game.valueToTie;
     }
-
+	
     document.getElementById("YourScore").innerHTML =
       "Your score: " + Game.score[0].toString();
     document.getElementById("OpponentScore").innerHTML =
@@ -137,7 +121,6 @@ function updateScore() {
 
 function generateCards(number) {
   var html = "";
-  //for (var player in cards) {
   //insert card placeholder for each player
   for (var i = 0; i < Cards.count; i++) {
     Cards.value[i] = 1;
@@ -196,9 +179,6 @@ function drop(card) {
   document.getElementById("endTurn").className = "endTurnButton ready";
 }
 
-// DROP FUCNTION for CARD STARTING ROW:
-// - end with cardPlayed = false
-
 function start() {
   generateGoals();
   generateCards();
@@ -221,12 +201,14 @@ function selectCard(cardID) {
 function endTurn() {
   if (Game.turnNumber < Game.duration) {
     if (goalIndex == null) {
-      alert("Place a card"); //Error message goes here
+      alert("Place a card"); //Error message if no card is placed
     } else {
       Game.turnNumber++;
+	  
       console.log("Turn: " + Game.turnNumber);
       console.log("Duration: " + Game.duration);
       incrementScore(0, 1, goalIndex);
+	  
       //10-10-2019(Tony) pushes the progress of each player to result every turn- seems to be changing as the game goes on
       var player1progress = JSON.parse(JSON.stringify(Game.progress[0]));
       var player2progress = JSON.parse(JSON.stringify(Game.progress[1]));
@@ -242,66 +224,48 @@ function endTurn() {
       document.getElementById("endTurn").className = "endTurnButton";
 
       if (Game.turnNumber >= Game.duration) {
-        stoptimer();
-        // console.log(interval);
-        resultsdata.timespent += " seconds in trial";
+        
+		stoptimer();
         endGame();
+		
       }
     }
   }
 }
 
 function endGame() {
-  var playerScore = 0;
-  var opponentScore = 0;
-  for (var i = 0; i < Game.numberOfGoals; i++) {
-    console.log(Game.progress);
-    if (Game.progress[0][i] > Game.progress[1][i]) {
-      playerScore += Game.goalValue[0][i];
-    } else if (Game.progress[0][i] == Game.progress[1][i]) {
-      playerScore += Game.valueToTie;
-      opponentScore += Game.valueToTie;
-    } else {
-      opponentScore += Game.goalValue[1][i];
-    }
-  }
-  console.log("playerscore: " + playerScore);
-  console.log("opponentscore: " + opponentScore);
+  
+  resultsdata.trailendscore[0] = Game.score[0];
+  resultsdata.trailendscore[1] = Game.score[1];
+
+  console.log("player score: " + Game.score[0]);
+  console.log("opponent score: " + Game.score[1]);
+  
   var results = document.getElementById("results");
   results.innerHTML =
     "<h1>RESULTS</h1><hr>" +
     "<p>You scored: " +
-    playerScore.toString() +
+    Game.score[0].toString() +
     ".</p>" +
     "<p>Your opponent scored: " +
-    opponentScore.toString() +
+    Game.score[1].toString() +
     ".</p>";
 
-  if (playerScore > opponentScore) {
+  if (Game.score[0] > Game.score[1]) {
     results.innerHTML += "<h3>You won!</h3>";
-  } else if (playerScore == opponentScore) {
+  } else if (Game.score[0] == Game.score[1]) {
     results.innerHTML += "<h3>It's a draw!</h3>";
   } else {
     results.innerHTML += "<h3>You lost!</h3>";
   }
-  // var newInstance = JSON.parse(JSON.stringify(firstInstance));
-  // var copyplayerscore = JSON.parse(JSON.stringify(playerScore));
-  // var copyopponentscore = JSON.parse(JSON.stringify(opponentScore));
-
-  // 10-10-2019 (Tony) to create the array for results at end of trial scores
-  // var copyplayerscore = Object.assign({},playerScore);
-  // var copyopponentscore = Object.assign({},opScore);
 
   document.getElementById("backgroundblur").style.display = "none";
   results.style.display = "block";
-  resultsdata.trialendscore.push(playerScore);
-  resultsdata.trialendscore.push(opponentScore);
-  setTimeout(jatos.startNextComponent(), 3000);
-  jatos.appendResultData(resultsdata); //this will be used to append results of this trail to the array of results of all trails
-  // I want it to wait for 3 seconds before the next component starts but it doesnt work
+  
+  jatos.appendResultData(resultsdata); //used to append results of this trail to the array of results of all trails
+  jatos.startNextComponent(); // starts the next component
+ 
 
-  // 10-10-2019 (Tony) to create the array for results at end of trial scores
-  // found a bug where the below two functions stops the game from finishing if put on top of the jatos.nextcomponent
 }
 
 // function that triggers the overlay when the help button is depressed.
