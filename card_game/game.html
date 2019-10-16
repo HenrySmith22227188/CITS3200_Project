@@ -40,8 +40,10 @@
 
   <body onLoad="jatos.onLoad(start())">
     <div id="backgroundblur">
-      <!-- **currently under work blurring the background causes background to shrink  -->
       <div class="left half">
+        <div class="help">
+          <button class="helpbutton" onclick="overlay()">Help</button>
+        </div>
         <h3 id="YourScore">Your score: 0</h3>
       </div>
       <div class="right half">
@@ -53,9 +55,6 @@
       
       <div id="endTurn" class="endTurnButton" onclick="endTurn();">End Turn</div>
       <div id="cards" class="cards">
-      </div>
-      <div class="help">
-        <button class="helpbutton" onclick="overlay()">Help</button>
       </div>
     </div>
     
