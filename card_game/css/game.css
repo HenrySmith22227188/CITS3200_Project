@@ -198,19 +198,18 @@
 .help {
   text-align: center;
 }
+
 .helpbutton {
-  /* margin-bottom: 10%;
-    margin-left: 60%; */
-  transform: translate(0%, -1310%);  /* whatever this is meant to do it doesnt work */
-  /* -ms-transform: translate(-50%, -50%);
-    -webkit-transform: translate(-50%, -50%); */
+  margin-top: 1%;
+  margin-left: 3%;
+  margin-right: 0px;
+  float: left;
   background-color: green;
   text-align: center;
   border: 1px solid black;
   font: bold 1px arial, helvetica, sans-serif;
-  /* text-decoration: aliceblue; */
   color: white;
-  display: inline-block;
+  display: block;
   border-radius: 10px;
   font-size: 120%;
   padding: 10px 20px;
