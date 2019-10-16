@@ -5,21 +5,23 @@ var index;
 var goalIndex;
 var Result;
 var interval;
+var added;
+var trailNumber = 0;
 
 jatos.onLoad(timercount()); // starts timer
 
 // A variable to hold many of the game's variables
 var Game = {
   hasPickedUp: -1, //indicator as to if the player has placed a card, if they have the value is the id of the card else its value is -1.
-  duration: data.numberOfCards, //The number of remaining turns in a trial.
-  goalValue: data.goalValue, //An array holding one array for each player, which represents the value of each goal to that player.
-  numberOfGoals: data.goalValue[0].length, // the number of goals 
+  duration: data[trailNumber].numberOfCards, //The number of remaining turns in a trial.
+  goalValue: data[trailNumber].goalValue, //An array holding one array for each player, which represents the value of each goal to that player.
+  numberOfGoals: data[trailNumber].goalValue[0].length, // the number of goals 
 
   valueToTie: 0, //The value gained by each player in the result of a tie for any goal.
-  probabilityOfProgress: data.probabilityOfProgress, //The likelihood of making progess towards a goal (i.e. of the card not disintegrating) for each player.
-  progress: data.progress, //The progress made by each player towards each goal.
+  probabilityOfProgress: data[trailNumber].probabilityOfProgress, //The likelihood of making progess towards a goal (i.e. of the card not disintegrating) for each player.
+  progress: data[trailNumber].progress, //The progress made by each player towards each goal.
 
-  goalOpen: data.goalOpen, // If the players can place cards in each lane
+  goalOpen: data[trailNumber].goalOpen, // If the players can place cards in each lane
   score: [0, 0], //The total score for each player.
   turnNumber: 0, // The turn number, initialised to 0. Increment during gameplay
   cardImage: "https://cdn.pixabay.com/photo/2015/08/11/11/57/spades-884197_960_720.png" // reference for the image used as the card.
@@ -27,7 +29,7 @@ var Game = {
 
 // A variable to define the cards
 var Cards = {
-  count: data.numberOfCards, //The number of cards avaliable to each player at start of game
+  count: data[trailNumber].numberOfCards, //The number of cards avaliable to each player at start of game
   value: new Array(), //An array to hold the value of each card
   image: new Array(), //An array to hold the image for each card corresponding to its value
   playable: new Array() //An array to hold if the card is playable
@@ -76,8 +78,14 @@ function generateGoals() {
     for (var j = 0; j < Game.progress[0][i]; j++) {
       imagesProgressPlayer += "<img src=" + Game.cardImage + ">";
     }
-    for (var j = 0; j < Game.progress[1][i]; j++) {
-      imagesProgressOpponent += "<img src=" + Game.cardImage + ">";
+	
+	var opponentProgress = "0";
+	
+    if(data[trailNumber].showOpponentProgress) {
+		for (var j = 0; j < Game.progress[1][i]; j++) {
+			imagesProgressOpponent += "<img src=" + Game.cardImage + ">";
+		}
+		opponentProgress = Game.progress[1][i].toString()
     }
 
     html +=
@@ -96,7 +104,7 @@ function generateGoals() {
       '">' +
       Game.progress[0][i].toString() +
       '</h3></div><div class="right score"><h3 id=score1_' + ii + '>' +
-      Game.progress[1][i].toString() +
+      opponentProgress +
       "</h3></div></div></div>";
 
     document.getElementById("goals").innerHTML = html;
@@ -110,26 +118,52 @@ function updateScore() {
 
   Game.score = [0, 0];
   for (var i = 0; i < Game.numberOfGoals; i++) {
-    document.getElementById("score0_" + i.toString()).innerHTML =
-      Game.progress[0][i];
-	document.getElementById("score1_" + i.toString()).innerHTML =
-      Game.progress[1][i];
-
+    
+	document.getElementById("score0_" + i.toString()).innerHTML = Game.progress[0][i];
+	
+	if(data[trailNumber].showOpponentProgress) {
+		document.getElementById("score1_" + i.toString()).innerHTML = Game.progress[1][i];
+	}
+	
     if (Game.progress[1][i] < Game.progress[0][i]) {
-      Game.score[0] += Game.goalValue[0][i];
+		
+		if(typeof(Game.goalValue[0][i]) != "number") {
+			var range = Game.goalValue[0][i].split("-", 2);
+			if(Game.turnNumber == Game.duration) {
+				Game.score[0] += Math.round((parseInt(range[1]) - parseInt(range[0])) * Math.random() + parseInt(range[0]));
+			}	
+			else {	
+				Game.score[0] += (parseInt(range[0])+parseInt(range[1]))/2;
+			}
+		} 
+		else {
+			Game.score[0] += Game.goalValue[0][i];
+		}  
 
     } else if (Game.progress[1][i] > Game.progress[0][i]) {
-      Game.score[1] += Game.goalValue[1][i];
-
-    } else {
-      Game.score[0] += Game.valueToTie;
-      Game.score[1] += Game.valueToTie;
+		
+		if(typeof(Game.goalValue[1][i]) != "number") {
+			var range = Game.goalValue[1][i].split("-", 2);
+			if(Game.turnNumber == Game.duration) {
+				Game.score[1] += Math.round((parseInt(range[1]) - parseInt(range[0])) * Math.random() + parseInt(range[0]));
+			}
+			else {
+				Game.score[1] += (parseInt(range[0])+parseInt(range[1]))/2;
+			}
+		} 
+		else {
+			Game.score[1] += Game.goalValue[1][i];
+		}
+    } 
+	else {
+		Game.score[0] += Game.valueToTie;
+		Game.score[1] += Game.valueToTie;
     }
 	
-    document.getElementById("YourScore").innerHTML =
-      "Your score: " + Game.score[0].toString();
-    document.getElementById("OpponentScore").innerHTML =
-      "Opponent score: " + Game.score[1].toString();
+    if(data[trailNumber].showOpponentProgress) {
+		document.getElementById("YourScore").innerHTML = "Your score: " + Game.score[0].toString();
+		document.getElementById("OpponentScore").innerHTML = "Opponent score: " + Game.score[1].toString();
+	}
   }
 }
 
@@ -149,8 +183,7 @@ function generateCards(number) {
       i.toString() +
       '" src="' +
       Cards.image[i].src +
-      '" alt="" onclick="selectCard(card' +
-      i.toString() +
+      '" alt="" ' +
       ');" draggable="true" ondragstart="drag(event);" />';
     Cards.playable[i] = false;
   }
@@ -197,12 +230,12 @@ function allowDrop(card) {
 function drop(card) {
 
   card.preventDefault();
-  var data = card.dataTransfer.getData("text"); //Gets the ID of card from the drag(card) function.
-  if (data != "") {
+  var cardId = card.dataTransfer.getData("text"); //Gets the ID of card from the drag(card) function.
+  if (cardId != "") {
     index = data[data.length - 1];
     var goal = card.target.parentNode.lastChild.id; //Retrieves the ID of the goal it was dragged to.
     goalIndex = parseInt(goal[goal.length - 1]); //Extracts the goal number from its ID.
-    card.target.appendChild(document.getElementById(data)); //Moves the dragged card to the box in which it was dropped.
+	card.target.appendChild(document.getElementById(cardId)); //Moves the dragged card to the box in which it was dropped.
   }
   cardPlayed = true;
   document.getElementById("endTurn").className = "endTurnButton ready";
@@ -212,25 +245,23 @@ function drop(card) {
 	A function that calls generateGoals and generateCards
 */
 function start() {
-  generateGoals();
-  generateCards();
+	generateGoals();
+	generateCards(); 
 }
 
 /*	@function incrementScore
-	A function to increment the score of a player at a particular goal.
-	@param player, [0 or 1] to indicate what playe
+	A function to increment the score of a player at a particular goal. uses random number to 
+	@param player, [0 or 1] to indicate what player the score is added to
 	@param score, to increment progress by
 	@param goalNumber, the goal index [int] to add points to.
+	@return int, 1 if the score was added, 0 otherwise
 */
 function incrementScore(player, scoreToAdd, goalNumber) {
-   Game.progress[player][goalNumber] += scoreToAdd;
-}
-
-/* 	@function selectCard
-	A function to change the card class name of a selected card.
-*/
-function selectCard(cardID) {
-  document.getElementById(cardID).className = "selected";
+	if(Math.random() <= Game.probabilityOfProgress[player]) {
+		Game.progress[player][goalNumber] += scoreToAdd;
+		return 1;
+	}
+	return 0;
 }
 
 /* 	Example function to show how you can make Opponents that dynamically add cards
@@ -246,8 +277,9 @@ function mirrorOpponent() {
 	@param goalNumber, the goal index [int] to add points to.
 */
 function incrementOpponent(goalToIncrement, scoreToAdd) {
-	Game.progress[1][goalToIncrement] += scoreToAdd;
-	for(var i = 0; i < scoreToAdd; i++) {
+	var addedOpponent = incrementScore(1, scoreToAdd, goalIndex);
+
+	if(addedOpponent == 1 && data[trailNumber].showOpponentProgress) {
 		document.getElementById("goal"+goalToIncrement).previousSibling.innerHTML += "<img src=" + Game.cardImage + ">";
 	}
 }
@@ -259,35 +291,40 @@ function incrementOpponent(goalToIncrement, scoreToAdd) {
 function endTurn() {
   if (Game.turnNumber < Game.duration) {
     if (cardPlayed != true) {
-      alert("Place a card"); //Error message if no card is placed, only needed if the end turn button can be pressed before a card has been placed
+		alert("Place a card"); //Error message if no card is placed, only needed if the end turn button can be pressed before a card has been placed
     } else {
-      Game.turnNumber++;
+		Game.turnNumber++;
+		
+		added = incrementScore(0, Cards.value[Game.hasPickedUp], goalIndex);
+		
+		if(added == 0) { 
+			document.getElementById("card"+Game.hasPickedUp).src = "";
+			document.getElementById("card"+Game.hasPickedUp).draggable = false;
+		}
 	  
-      console.log("Turn: " + Game.turnNumber);
-      console.log("Duration: " + Game.duration);
-      incrementScore(0, 1, goalIndex);
-	  if(data.opponent != "false") {
-		  window[data.opponent](1, 1);
-	  }
-	  updateScore();
+		if(data[trailNumber].opponent != "false") {
+			window[data[trailNumber].opponent](1, 1);
+		}
+		
+		updateScore();
 	  
-      //10-10-2019(Tony) pushes the progress of each player to result every turn- seems to be changing as the game goes on
-      var player1progress = JSON.parse(JSON.stringify(Game.progress[0]));
-      var player2progress = JSON.parse(JSON.stringify(Game.progress[1]));
+		//10-10-2019(Tony) pushes the progress of each player to result every turn- seems to be changing as the game goes on
+		var player1progress = JSON.parse(JSON.stringify(Game.progress[0]));
+		var player2progress = JSON.parse(JSON.stringify(Game.progress[1]));
 
-      resultsdata.player1.push(player1progress);
-      resultsdata.player2.push(player2progress);
+		resultsdata.player1.push(player1progress);
+		resultsdata.player2.push(player2progress);
 
-      yourTurn = false;
-      Cards.playable[Game.hasPickedUp] = true;
-      cardPlayed = false;
-      goalIndex = null;
-      Game.hasPickedUp = -1;
-      document.getElementById("endTurn").className = "endTurnButton";
+		yourTurn = false;
+		Cards.playable[Game.hasPickedUp] = true;
+		cardPlayed = false;
+		goalIndex = null;
+		Game.hasPickedUp = -1;
+		document.getElementById("endTurn").className = "endTurnButton";
 
-      if (Game.turnNumber >= Game.duration) {
-        endGame();
-      }
+		if (Game.turnNumber >= Game.duration) {
+		endGame();
+		}
     }
   }
 }
@@ -327,8 +364,11 @@ function endGame() {
   results.style.display = "block";
   
   jatos.appendResultData(resultsdata); //used to append results of this trail to the array of results of all trails
-  setTimeout(jatos.startNextComponent, 3000); // starts the next component after waiting 3 seconds
- 
+  trailNumber++;
+  
+  if(1/*trailNumber >= data.length*/) {
+	setTimeout(jatos.startNextComponent, 3000); // starts the next component after waiting 3 seconds
+  }
 
 }
 
