@@ -82,11 +82,11 @@ function generateGoals() {
       imagesProgressOpponent +
       '</div><div class="goal" id="goal' +
       ii +
-      '"><div class="left score"><h3 id="score' +
+      '"><div class="left score"><h3 id="score0_' + 
       ii +
       '">' +
       Game.progress[0][i].toString() +
-      '</h3></div><div class="right score"><h3>' +
+      '</h3></div><div class="right score"><h3 id=score1_' + ii + '>' +
       Game.progress[1][i].toString() +
       "</h3></div></div></div>";
 
@@ -98,8 +98,10 @@ function updateScore() {
   // A function to calculate the score, it also updates the progress displayed in the middle of the board
   Game.score = [0, 0];
   for (var i = 0; i < Game.numberOfGoals; i++) {
-    document.getElementById("score" + i.toString()).innerHTML =
+    document.getElementById("score0_" + i.toString()).innerHTML =
       Game.progress[0][i];
+	document.getElementById("score1_" + i.toString()).innerHTML =
+      Game.progress[1][i];
 
     if (Game.progress[1][i] < Game.progress[0][i]) {
       Game.score[0] += Game.goalValue[0][i];
@@ -189,13 +191,25 @@ function incrementScore(player, scoreToAdd, goalNumber) {
   if (Game.goalOpen[player][goalNumber]) {
     //Only open goals can have cards allocated to them.
     Game.progress[player][goalNumber] += scoreToAdd;
-    updateScore();
   }
 }
 
 function selectCard(cardID) {
   //A function to run when a card is selected.
   document.getElementById(cardID).className = "selected";
+}
+
+// Example function to show how you can make Opponents that dynamically add cards
+function mirrorOpponent() {
+	incrementOpponent(goalIndex, 1);
+}
+
+// Function incrementOpponent, increases progress by scoreToAdd in the Opponents lane for the goalToIncrement lane.
+function incrementOpponent(goalToIncrement, scoreToAdd) {
+	Game.progress[1][goalToIncrement] += scoreToAdd;
+	for(var i = 0; i < scoreToAdd; i++) {
+		document.getElementById("goal"+goalToIncrement).previousSibling.innerHTML += "<img src=" + Game.cardImage + ">";
+	}
 }
 
 function endTurn() {
@@ -208,6 +222,10 @@ function endTurn() {
       console.log("Turn: " + Game.turnNumber);
       console.log("Duration: " + Game.duration);
       incrementScore(0, 1, goalIndex);
+	  if(data.opponent != "false") {
+		  window[data.opponent](1, 1);
+	  }
+	  updateScore();
 	  
       //10-10-2019(Tony) pushes the progress of each player to result every turn- seems to be changing as the game goes on
       var player1progress = JSON.parse(JSON.stringify(Game.progress[0]));

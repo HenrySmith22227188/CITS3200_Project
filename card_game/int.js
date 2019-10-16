@@ -15,6 +15,6 @@
 		"numberOfCards": 3,
 		"probabilityOfProgress": [1, 1],
 		"showOpponentProgress": false,
-		"opponent": false,
+		"opponent": "mirrorOpponent",
 	}
 }
