@@ -6,27 +6,26 @@ var goalIndex;
 var Result;
 var interval;
 
-jatos.onLoad(timercount());
+jatos.onLoad(timercount()); // starts timer
 
+// A variable to hold many of the game's variables
 var Game = {
   hasPickedUp: -1, //indicator as to if the player has placed a card, if they have the value is the id of the card else its value is -1.
   duration: data.numberOfCards, //The number of remaining turns in a trial.
   goalValue: data.goalValue, //An array holding one array for each player, which represents the value of each goal to that player.
-  numberOfGoals: data.goalValue[0].length,
+  numberOfGoals: data.goalValue[0].length, // the number of goals 
 
   valueToTie: 0, //The value gained by each player in the result of a tie for any goal.
   probabilityOfProgress: data.probabilityOfProgress, //The likelihood of making progess towards a goal (i.e. of the card not disintegrating) for each player.
   progress: data.progress, //The progress made by each player towards each goal.
 
-  //** The following can probably exist outside of the Game object, since we don't need to report them? **
-  goalOpen: data.goalOpen, //The completedness of the goals.
+  goalOpen: data.goalOpen, // If the players can place cards in each lane
   score: [0, 0], //The total score for each player.
   turnNumber: 0, // The turn number, initialised to 0. Increment during gameplay
-  cardImage:
-    "https://cdn.pixabay.com/photo/2015/08/11/11/57/spades-884197_960_720.png"
-  //PlayerCard: [new Cards(), new Cards()]
+  cardImage: "https://cdn.pixabay.com/photo/2015/08/11/11/57/spades-884197_960_720.png" // reference for the image used as the card.
 };
 
+// A variable to define the cards
 var Cards = {
   count: data.numberOfCards, //The number of cards avaliable to each player at start of game
   value: new Array(), //An array to hold the value of each card
@@ -34,28 +33,38 @@ var Cards = {
   playable: new Array() //An array to hold if the card is playable
 };
 
+/* 	@function stoptimer
+	clears the timer set as interval 
+*/
 function stoptimer() {
   clearInterval(interval);
 }
 
+/* 	@function timercount
+	increments interval variable every 1000 miliseconds
+*/
 function timercount() {
   interval = setInterval(function() {
     resultsdata.timespent++;
   }, 1000);
 }
 
+// A variable to hold all the results to be parsed to JATOS
 var resultsdata = {
-	numberOfCards: Cards.count, 
-	goalValue: Game.goalValue, 
-	numberOfGoals: Game.numberOfGoals,
-	player1: new Array(),
-	player2: new Array(),
-	timespent: 0,
-	trailendscore: new Array()
+	numberOfCards: Cards.count, // a variable that holds the number of cards given to the players copyed from Cards object
+	goalValue: Game.goalValue,  // a variable that holds all the goal values as an array of an array where the first array is the player and the inner array is the values
+	numberOfGoals: Game.numberOfGoals, // a variable that holds the number of goals copyed from Game object
+	player1: new Array(), // a variable that holds the progress of player one as an array of arrays where the outer array is the turns and each each turn is an array of the progress for each goal on that turn.
+	player2: new Array(), // a variable that holds the progress of player two as an array of arrays where the outer array is the turns and each each turn is an array of the progress for each goal on that turn.
+	timespent: 0, // a variable that holds the number of seconds elapesed since the trail began.
+	trailendscore: new Array() // a varialbe that holds the score for each player at the end of the trail.
 };
 
+/*	@function generateGoals
+	A function to add HTML corresponding to the amount of goals (which is defined in the Game object).
+*/
 function generateGoals() {
-  //A function to add HTML corresponding to the amount of goals (which is defined in the value for G in the Game object).
+
   var html = "";
   
   for (var i = 0; i < Game.numberOfGoals; i++) {
@@ -94,8 +103,11 @@ function generateGoals() {
   }
 }
 
+/*	@function updateScore
+	A function to calculate the score, it also updates the progress displayed in the middle of the board for both players
+*/
 function updateScore() {
-  // A function to calculate the score, it also updates the progress displayed in the middle of the board
+
   Game.score = [0, 0];
   for (var i = 0; i < Game.numberOfGoals; i++) {
     document.getElementById("score0_" + i.toString()).innerHTML =
@@ -121,9 +133,12 @@ function updateScore() {
   }
 }
 
+/*	@function generateCards 
+	A function to create the cards for the player using the card image and adding the functions for dragging.
+*/
 function generateCards(number) {
   var html = "";
-  //insert card placeholder for each player
+
   for (var i = 0; i < Cards.count; i++) {
     Cards.value[i] = 1;
     Cards.image[i] = new Image();
@@ -140,9 +155,13 @@ function generateCards(number) {
     Cards.playable[i] = false;
   }
   document.getElementById("cards").innerHTML = html; //Inserts the above HTML into the 'cards' div.
-  //}
+
 }
 
+/*	@function drag
+	A function called when a card is dragged, it records the index of the card and transfers the dragged card
+	@param card, is the card object being dragged
+*/
 function drag(card) {
   //Collects the ID of the card as it begins to get dragged.
   index = parseInt(card.target.id[card.target.id.length - 1]);
@@ -152,9 +171,13 @@ function drag(card) {
   if (Cards.playable[index] == false && Game.hasPickedUp == index) {
     card.dataTransfer.setData("text", card.target.id);
   }
-  //}
+
 }
 
+/*	@function allowDrop
+	A function to determine if the card can be dropped targeted lane
+	@param card, is the card object being dropped
+*/
 function allowDrop(card) {
   //Allows the card boxes to accept cards.
   if (Cards.playable[index] == false && Game.hasPickedUp == index) {
@@ -167,8 +190,12 @@ function allowDrop(card) {
   }
 }
 
+/*	@function drop
+	A function to append the card object to the targeted lane also tells the game if a card has been played by seeting cardPlayed to true.
+	@param card, is the card object that should be moved
+*/
 function drop(card) {
-  //Once the card has been dropped to a valid box, it moves that node to its new parent.
+
   card.preventDefault();
   var data = card.dataTransfer.getData("text"); //Gets the ID of card from the drag(card) function.
   if (data != "") {
@@ -181,30 +208,43 @@ function drop(card) {
   document.getElementById("endTurn").className = "endTurnButton ready";
 }
 
+/*	@function start
+	A function that calls generateGoals and generateCards
+*/
 function start() {
   generateGoals();
   generateCards();
 }
 
+/*	@function incrementScore
+	A function to increment the score of a player at a particular goal.
+	@param player, [0 or 1] to indicate what playe
+	@param score, to increment progress by
+	@param goalNumber, the goal index [int] to add points to.
+*/
 function incrementScore(player, scoreToAdd, goalNumber) {
-  //A function to increment the score of a player at a particular goal. p = player [0 or 1], n = score to increment by [int], g = the goal [int] to add points to.
-  if (Game.goalOpen[player][goalNumber]) {
-    //Only open goals can have cards allocated to them.
-    Game.progress[player][goalNumber] += scoreToAdd;
-  }
+   Game.progress[player][goalNumber] += scoreToAdd;
 }
 
+/* 	@function selectCard
+	A function to change the card class name of a selected card.
+*/
 function selectCard(cardID) {
-  //A function to run when a card is selected.
   document.getElementById(cardID).className = "selected";
 }
 
-// Example function to show how you can make Opponents that dynamically add cards
+/* 	Example function to show how you can make Opponents that dynamically add cards
+	Any number of functions can be added but they will only be called if their name is put in the opponent var in the int.js
+*/
 function mirrorOpponent() {
 	incrementOpponent(goalIndex, 1);
 }
 
-// Function incrementOpponent, increases progress by scoreToAdd in the Opponents lane for the goalToIncrement lane.
+/*	@function incrementOppoent
+	A function to increases the opponents progress by scoreToAdd in the for the goalToIncrement lane.
+	@param score, to increment progress by
+	@param goalNumber, the goal index [int] to add points to.
+*/
 function incrementOpponent(goalToIncrement, scoreToAdd) {
 	Game.progress[1][goalToIncrement] += scoreToAdd;
 	for(var i = 0; i < scoreToAdd; i++) {
@@ -212,10 +252,14 @@ function incrementOpponent(goalToIncrement, scoreToAdd) {
 	}
 }
 
+/* 	@function endTurn
+	A function called when the turn ends, checks if a card has been played. if it has then it calls the AI function if one is specified in the int.js
+	then resets the turn unless the player has played all their cards in which case it calls endGame
+*/
 function endTurn() {
   if (Game.turnNumber < Game.duration) {
-    if (goalIndex == null) {
-      alert("Place a card"); //Error message if no card is placed
+    if (cardPlayed != true) {
+      alert("Place a card"); //Error message if no card is placed, only needed if the end turn button can be pressed before a card has been placed
     } else {
       Game.turnNumber++;
 	  
@@ -242,16 +286,18 @@ function endTurn() {
       document.getElementById("endTurn").className = "endTurnButton";
 
       if (Game.turnNumber >= Game.duration) {
-        
-		stoptimer();
         endGame();
-		
       }
     }
   }
 }
 
+/*	@function endGame
+	A function that is called when the game ends, it parses the results to JATOS and shows the results of the trail before calling the nextComponent
+*/
 function endGame() {
+  
+  stoptimer();
   
   resultsdata.trailendscore[0] = Game.score[0];
   resultsdata.trailendscore[1] = Game.score[1];
@@ -281,12 +327,14 @@ function endGame() {
   results.style.display = "block";
   
   jatos.appendResultData(resultsdata); //used to append results of this trail to the array of results of all trails
-  jatos.startNextComponent(); // starts the next component
+  setTimeout(jatos.startNextComponent, 3000); // starts the next component after waiting 3 seconds
  
 
 }
 
-// function that triggers the overlay when the help button is depressed.
+/*	@function overlay
+	A function called when the help button is released, it toggles the help overlay and the blur on the background
+*/
 function overlay() {
   var overlay = document.getElementById("overlay");
   var containerElement = document.getElementById("backgroundblur");
