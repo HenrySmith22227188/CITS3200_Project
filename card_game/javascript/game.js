@@ -22,7 +22,7 @@ function Game() {
   this.goalOpen = data[trailNumber].goalOpen; // If the players can place cards in each lane
   this.score = [0, 0]; //The total score for each player.
   this.turnNumber = 0; // The turn number, initialised to 0. Increment during gameplay
-  this.cardImage = "https://cdn.pixabay.com/photo/2015/08/11/11/57/spades-884197_960_720.png"; // reference for the image used as the card.
+  this.cardImage = ["", "https://cdn.pixabay.com/photo/2015/08/11/11/57/spades-884197_960_720.png"]; // reference for the image used as the card.
 };
 
 // A variable to define the collection of cards
@@ -44,18 +44,26 @@ function stoptimer() {
 	increments interval variable every 1000 miliseconds
 */
 function timercount() {
-  interval = setInterval(function() {
-    resultsdata.timespent++;
-  }, 1000);
+	interval = setInterval(function() {
+		resultsdata.timePerStep[game.turnNumber]++;
+		resultsdata.timespent++;
+	}, 1000);
 }
 
 // A variable to hold all the results to be parsed to JATOS
 function Resultsdata() {
 	this.numberOfCards = cards.count; // a variable that holds the number of cards given to the players copyed from cards object
 	this.goalValue = game.goalValue; // a variable that holds all the goal values as an array of an array where the first array is the player and the inner array is the values
-	this.numberOfGoals = game.numberOfGoals; // a variable that holds the number of goals copyed from game object
-	this.player1 = new Array(); // a variable that holds the progress of player one as an array of arrays where the outer array is the turns and each each turn is an array of the progress for each goal on that turn.
-	this.player2 = new Array(); // a variable that holds the progress of player two as an array of arrays where the outer array is the turns and each each turn is an array of the progress for each goal on that turn.
+	this.numberOfGoals = game.numberOfGoals; // a variable that holds the number of goals copyed from game object.
+	this.numberOfGoalsComplete = [0, 0]; // the number of goals each player has won.
+	this.player1State = new Array(); // a variable that holds the progress of player one as an array of arrays where the outer array is the turns and each each turn is an array of the progress for each goal on that turn.
+	this.player2State = new Array(); // a variable that holds the progress of player two as an array of arrays where the outer array is the turns and each each turn is an array of the progress for each goal on that turn.
+	this.player1Progress = new Array(); // the row where player 1 placed a card.
+	this.player2Progress = new Array(); // the row where player 2 placed a card.
+	this.timePerStep = new Array(game.duration); // time to place each card
+	for(var i = 0; i < game.duration; i++) {
+		this.timePerStep[i] = 0;
+	}
 	this.timespent = 0; // a variable that holds the number of seconds elapesed since the trail began.
 	this.trailendscore = new Array(); // a varialbe that holds the score for each player at the end of the trail.
 };
@@ -68,20 +76,20 @@ function generateGoals() {
   var html = "";
   
   for (var i = 0; i < game.numberOfGoals; i++) {
-    var ii = i.toString(); //To be inserted into the HTML to find the right goals.
+    var iAsAString = i.toString(); //To be inserted into the HTML to find the right goals.
 
     var imagesProgressPlayer = "";
     var imagesProgressOpponent = "";
 
     for (var j = 0; j < game.progress[0][i]; j++) {
-      imagesProgressPlayer += "<img src=" + game.cardImage + ">";
+      imagesProgressPlayer += "<img src=" + game.cardImage[1] + ">";
     }
 	
 	var opponentProgress = "0";
 	
     if(data[trailNumber].showOpponentProgress) {
 		for (var j = 0; j < game.progress[1][i]; j++) {
-			imagesProgressOpponent += "<img src=" + game.cardImage + ">";
+			imagesProgressOpponent += "<img src=" + game.cardImage[1] + ">";
 		}
 		opponentProgress = game.progress[1][i].toString()
     }
@@ -96,12 +104,12 @@ function generateGoals() {
       '</div><div class="box opponentBox" ondrop="drop(event);" ondragover="allowDrop(event);">' +
       imagesProgressOpponent +
       '</div><div class="goal" id="goal' +
-      ii +
+      iAsAString +
       '"><div class="left score"><h3 id="score0_' + 
-      ii +
+      iAsAString +
       '">' +
       game.progress[0][i].toString() +
-      '</h3></div><div class="right score"><h3 id=score1_' + ii + '>' +
+      '</h3></div><div class="right score"><h3 id=score1_' + iAsAString + '>' +
       opponentProgress +
       "</h3></div></div></div>";
 
@@ -114,7 +122,9 @@ function generateGoals() {
 */
 function updateScore() {
 
-  game.score = [0, 0];
+  game.score = [0, 0]; 
+  resultsdata.numberOfGoalsComplete = [0, 0];
+  
   for (var i = 0; i < game.numberOfGoals; i++) {
     
 	document.getElementById("score0_" + i.toString()).innerHTML = game.progress[0][i];
@@ -129,13 +139,16 @@ function updateScore() {
 			var range = game.goalValue[0][i].split("-", 2);
 			if(game.turnNumber == game.duration) {
 				game.score[0] += Math.round((parseInt(range[1]) - parseInt(range[0])) * Math.random() + parseInt(range[0]));
+				resultsdata.numberOfGoalsComplete[0]++;
 			}	
 			else {	
 				game.score[0] += (parseInt(range[0])+parseInt(range[1]))/2;
+				resultsdata.numberOfGoalsComplete[0]++;
 			}
 		} 
 		else {
 			game.score[0] += game.goalValue[0][i];
+			resultsdata.numberOfGoalsComplete[0]++;
 		}  
 
     } else if (game.progress[1][i] > game.progress[0][i]) {
@@ -144,23 +157,32 @@ function updateScore() {
 			var range = game.goalValue[1][i].split("-", 2);
 			if(game.turnNumber == game.duration) {
 				game.score[1] += Math.round((parseInt(range[1]) - parseInt(range[0])) * Math.random() + parseInt(range[0]));
+				resultsdata.numberOfGoalsComplete[1]++;
 			}
 			else {
 				game.score[1] += (parseInt(range[0])+parseInt(range[1]))/2;
+				resultsdata.numberOfGoalsComplete[1]++;
 			}
 		} 
 		else {
 			game.score[1] += game.goalValue[1][i];
+			resultsdata.numberOfGoalsComplete[1]++;
 		}
     } 
 	else {
 		game.score[0] += game.valueToTie;
+		//resultsdata.numberOfGoalsComplete[0]++;
 		game.score[1] += game.valueToTie;
+		//resultsdata.numberOfGoalsComplete[1]++;
     }
 	
     if(data[trailNumber].showOpponentProgress) {
 		document.getElementById("YourScore").innerHTML = "Your score: " + game.score[0].toString();
 		document.getElementById("OpponentScore").innerHTML = "Opponent score: " + game.score[1].toString();
+	}
+	else {
+		document.getElementById("YourScore").innerHTML = "Your score: 0";
+		document.getElementById("OpponentScore").innerHTML = "Opponent score: 0";
 	}
   }
 }
@@ -174,7 +196,7 @@ function generatecards(number) {
   for (var i = 0; i < cards.count; i++) {
     cards.value[i] = 1;
     cards.image[i] = new Image();
-    cards.image[i].src = game.cardImage;
+    cards.image[i].src = game.cardImage[1];
 
     html +=
       '<img id="card' +
@@ -258,13 +280,40 @@ function start() {
 }
 
 /*	@function incrementScore
-	A function to increment the score of a player at a particular goal. uses random number to 
+	A function to increment the score of a player at a particular goal. uses random number to. Also increment the results for where the players tired to make progress.
 	@param player, [0 or 1] to indicate what player the score is added to
 	@param score, to increment progress by
 	@param goalNumber, the goal index [int] to add points to.
 	@return int, 1 if the score was added, 0 otherwise
 */
 function incrementScore(player, scoreToAdd, goalNumber) {
+	array = new Array(game.turnNumber);
+	if(player == 0) {
+		for(var i = 0; i < game.numberOfGoals; i++) {
+			if(i == goalNumber) {
+				array[i] = scoreToAdd;
+			}
+			else {
+				array[i] = 0;
+			}
+		}
+		var player1Progress = JSON.parse(JSON.stringify(array));
+
+		resultsdata.player1Progress.push(player1Progress);
+	}
+	else if(player == 1) {
+		for(var i = 0; i < game.numberOfGoals; i++) {
+			if(i == goalNumber) {
+				array[i] = scoreToAdd;
+			}
+			else {
+				array[i] = 0;
+			}
+		}
+		var player2Progress = JSON.parse(JSON.stringify(array));
+
+		resultsdata.player2Progress.push(player2Progress);
+	}
 	if(Math.random() <= game.probabilityOfProgress[player]) {
 		game.progress[player][goalNumber] += scoreToAdd;
 		return 1;
@@ -272,6 +321,46 @@ function incrementScore(player, scoreToAdd, goalNumber) {
 	return 0;
 }
 
+function smartAI() {
+	var bestGoal = -1;
+	var bestGoalValue = -1;
+	for(var i = 0; i < game.numberOfGoals; i++) {
+		
+		var oldScore = 0;
+		var newScore = 0;
+		
+		if(typeof(game.goalValue[i]) == "string") {
+
+			var avgValue = [0, 0];
+			var range = game.goalValue[0][i].split("-", 2);
+			avgValue[0] = (parseInt(range[0])+parseInt(range[1]))/2;
+			var range = game.goalValue[1][i].split("-", 2);
+			avgValue[1] = (parseInt(range[0])+parseInt(range[1]))/2;
+			
+			if(resultsdata.player1State[game.turnNumber-1][i] > resultsdata.player2State[game.turnNumber-1][i]) oldScore = -avgValue[0];
+			else if(resultsdata.player1State[game.turnNumber-1][i] < resultsdata.player2State[game.turnNumber-1][i]) oldScore = avgValue[1];
+
+			var newRange;
+			if(resultsdata.player1State[game.turnNumber-1][i] > resultsdata.player2State[game.turnNumber-1][i]+1) newScore = -avgValue[0];
+			else if(resultsdata.player1State[game.turnNumber-1][i] < resultsdata.player2State[game.turnNumber-1][i]+1) newScore = avgValue[1];
+		}
+		else {
+			if(resultsdata.player1State[game.turnNumber-1][i] > resultsdata.player2State[game.turnNumber-1][i]) oldScore = -game.goalValue[0][i];
+			else if(resultsdata.player1State[game.turnNumber-1][i] < resultsdata.player2State[game.turnNumber-1][i]) oldScore = game.goalValue[1][i];
+
+			if(resultsdata.player1State[game.turnNumber-1][i] > resultsdata.player2State[game.turnNumber-1][i]+1) newScore = -game.goalValue[0][i];
+			else if(resultsdata.player1State[game.turnNumber-1][i] < resultsdata.player2State[game.turnNumber-1][i]+1) newScore = game.goalValue[1][i];
+		}
+		var moveValue = newScore - oldScore;
+		
+		if(moveValue > bestGoalValue) {
+			bestGoal = i;
+			bestGoalValue = moveValue;
+		}	
+	}
+	incrementOpponent(bestGoal, 1);
+}
+	
 /* 	Example function to show how you can make Opponents that dynamically add cards
 	Any number of functions can be added but they will only be called if their name is put in the opponent var in the int.js
 */
@@ -285,10 +374,10 @@ function mirrorOpponent() {
 	@param goalNumber, the goal index [int] to add points to.
 */
 function incrementOpponent(goalToIncrement, scoreToAdd) {
-	var addedOpponent = incrementScore(1, scoreToAdd, goalIndex);
+	var addedOpponent = incrementScore(1, scoreToAdd, goalToIncrement);
 
 	if(addedOpponent == 1 && data[trailNumber].showOpponentProgress) {
-		document.getElementById("goal"+goalToIncrement).previousSibling.innerHTML += "<img src=" + game.cardImage + ">";
+		document.getElementById("goal"+goalToIncrement).previousSibling.innerHTML += "<img src=" + game.cardImage[scoreToAdd] + ">";
 	}
 }
 
@@ -301,12 +390,22 @@ function endTurn(callback) {
     if (cardPlayed != true) {
 		alert("Place a card"); //Error message if no card is placed, only needed if the end turn button can be pressed before a card has been placed
     } else {
+		
+		console.log(interval);
+		
 		game.turnNumber++;
+		
+		//10-10-2019(Tony) pushes the progress of each player to result every turn- seems to be changing as the game goes on
+		var player1State = JSON.parse(JSON.stringify(game.progress[0]));
+		var player2State = JSON.parse(JSON.stringify(game.progress[1]));
+
+		resultsdata.player1State.push(player1State);
+		resultsdata.player2State.push(player2State);
 		
 		added = incrementScore(0, cards.value[game.hasPickedUp], goalIndex);
 		
 		if(added == 0) { 
-			document.getElementById("card"+game.hasPickedUp).src = "";
+			document.getElementById("card"+game.hasPickedUp).src = game.cardImage[0];
 			document.getElementById("card"+game.hasPickedUp).draggable = false;
 		}
 	  
@@ -315,13 +414,6 @@ function endTurn(callback) {
 		}
 		
 		updateScore();
-	  
-		//10-10-2019(Tony) pushes the progress of each player to result every turn- seems to be changing as the game goes on
-		var player1progress = JSON.parse(JSON.stringify(game.progress[0]));
-		var player2progress = JSON.parse(JSON.stringify(game.progress[1]));
-
-		resultsdata.player1.push(player1progress);
-		resultsdata.player2.push(player2progress);
 
 		yourTurn = false;
 		cards.playable[game.hasPickedUp] = true;
@@ -331,7 +423,7 @@ function endTurn(callback) {
 		document.getElementById("endTurn").className = "endTurnButton";
 
 		if (game.turnNumber >= game.duration) {
-		endgame(callback);
+			endgame(callback);
 		}
     }
   }
@@ -347,10 +439,10 @@ function toggleResults() {
 	if(results.style.display == "block") {
 		results.innerHTML = "";
 		results.style.display = "none";
-		document.getElementById("backgroundblur").style.display = "initial";
+		document.getElementById("main").style.display = "initial";
 	}
 	else {
-		document.getElementById("backgroundblur").style.display = "none";
+		document.getElementById("main").style.display = "none";
 		results.style.display = "block";
 	}
 }
@@ -364,9 +456,6 @@ function endgame(callback) {
 	  
 	resultsdata.trailendscore[0] = game.score[0];
 	resultsdata.trailendscore[1] = game.score[1];
-
-	console.log("player score: " + game.score[0]);
-	console.log("opponent score: " + game.score[1]);
 	  
 	var results = document.getElementById("results");
 	results.innerHTML =
@@ -376,7 +465,14 @@ function endgame(callback) {
 		".</p>" +
 		"<p>Your opponent scored: " +
 		game.score[1].toString() +
-		".</p>";
+		".</p>" +
+		"<p> You completed: " +
+		resultsdata.numberOfGoalsComplete[0] +
+		" goals. </p>" +
+		"<p> Your Opponent completed: " +
+		resultsdata.numberOfGoalsComplete[1] +
+		" goals </p>"
+		
 
 	if (game.score[0] > game.score[1]) {
 		results.innerHTML += "<h3>You won!</h3>";
@@ -399,19 +495,4 @@ function endgame(callback) {
 		setTimeout(toggleResults, 3000);
 	}
   
-}
-
-/*	@function overlay
-	A function called when the help button is released, it toggles the help overlay and the blur on the background
-*/
-function overlay() {
-  var overlay = document.getElementById("overlay");
-  var containerElement = document.getElementById("backgroundblur");
-  if (overlay.style.display == "none") {
-    overlay.style.display = "block";
-    containerElement.setAttribute("class", "blur");
-  } else {
-    overlay.style.display = "none";
-    containerElement.setAttribute("class", null);
-  }
 }
