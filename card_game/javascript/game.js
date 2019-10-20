@@ -262,12 +262,16 @@ function drop(card) {
 }
 
 /*	@function start
-	A function that calls generateGoals and generatecards
+
+	A function that sets the variables of the game including the timer and then
+	calls generateGoals and generatecards functions aswell as 
+	calling the updateScore function.
+	
 */
 function start() {
 	jatos.onLoad(timercount()); // starts timer
 	
-	//all the variables are set to their values bases on the trailNumber and int.js
+	//all the variables are set to their values bases on the and int.js using the current trialNumber.
 	game = new Game();
 	cards = new Cards();
 	resultsdata = new Resultsdata();
@@ -321,6 +325,17 @@ function incrementScore(player, scoreToAdd, goalNumber) {
 	return 0;
 }
 
+// Another example AI this one just randomly picks a lane, the chances of each lane aren't even though but it does consider
+// if the lane is open.
+function randomAI() {
+	var goalToIncrement = -1;
+	while(game.goalOpen[1][goalToIncrement] == false) {
+		goalToIncrement = Math.round(Math.random()*game.numberOfGoals);
+	}
+	incrementOpponent(goalToIncrement, 1);
+}
+
+// Another example AI to show how to make a fair AI, although this one ignores if a goal is open to them. this could be easily implemented.
 function smartAI() {
 	var bestGoal = -1;
 	var bestGoalValue = -1;
@@ -328,36 +343,39 @@ function smartAI() {
 		
 		var oldScore = 0;
 		var newScore = 0;
+		var avgValue = [0, 0];
 		
-		if(typeof(game.goalValue[i]) == "string") {
-
-			var avgValue = [0, 0];
+		if(typeof(game.goalValue[0][i]) == "string") {
+			
 			var range = game.goalValue[0][i].split("-", 2);
 			avgValue[0] = (parseInt(range[0])+parseInt(range[1]))/2;
+		}
+		else { 
+			avgValue[0] = game.goalValue[0][i]; 
+		}
+		if(typeof(game.goalValue[1][i]) == "string") {
+
 			var range = game.goalValue[1][i].split("-", 2);
 			avgValue[1] = (parseInt(range[0])+parseInt(range[1]))/2;
-			
-			if(resultsdata.player1State[game.turnNumber-1][i] > resultsdata.player2State[game.turnNumber-1][i]) oldScore = -avgValue[0];
-			else if(resultsdata.player1State[game.turnNumber-1][i] < resultsdata.player2State[game.turnNumber-1][i]) oldScore = avgValue[1];
-
-			var newRange;
-			if(resultsdata.player1State[game.turnNumber-1][i] > resultsdata.player2State[game.turnNumber-1][i]+1) newScore = -avgValue[0];
-			else if(resultsdata.player1State[game.turnNumber-1][i] < resultsdata.player2State[game.turnNumber-1][i]+1) newScore = avgValue[1];
 		}
 		else {
-			if(resultsdata.player1State[game.turnNumber-1][i] > resultsdata.player2State[game.turnNumber-1][i]) oldScore = -game.goalValue[0][i];
-			else if(resultsdata.player1State[game.turnNumber-1][i] < resultsdata.player2State[game.turnNumber-1][i]) oldScore = game.goalValue[1][i];
-
-			if(resultsdata.player1State[game.turnNumber-1][i] > resultsdata.player2State[game.turnNumber-1][i]+1) newScore = -game.goalValue[0][i];
-			else if(resultsdata.player1State[game.turnNumber-1][i] < resultsdata.player2State[game.turnNumber-1][i]+1) newScore = game.goalValue[1][i];
+			avgValue[1] = game.goalValue[1][i];
 		}
-		var moveValue = newScore - oldScore;
 		
+		if(resultsdata.player1State[game.turnNumber-1][i] > resultsdata.player2State[game.turnNumber-1][i]) oldScore = -avgValue[0];
+		else if(resultsdata.player1State[game.turnNumber-1][i] < resultsdata.player2State[game.turnNumber-1][i]) oldScore = avgValue[1];
+
+		if(resultsdata.player1State[game.turnNumber-1][i] > resultsdata.player2State[game.turnNumber-1][i]+1) newScore = -avgValue[0];
+		else if(resultsdata.player1State[game.turnNumber-1][i] < resultsdata.player2State[game.turnNumber-1][i]+1) newScore = avgValue[1];
+		
+		var moveValue = newScore - oldScore;
+
 		if(moveValue > bestGoalValue) {
 			bestGoal = i;
 			bestGoalValue = moveValue;
-		}	
+		}		
 	}
+
 	incrementOpponent(bestGoal, 1);
 }
 	
@@ -390,8 +408,6 @@ function endTurn(callback) {
     if (cardPlayed != true) {
 		alert("Place a card"); //Error message if no card is placed, only needed if the end turn button can be pressed before a card has been placed
     } else {
-		
-		console.log(interval);
 		
 		game.turnNumber++;
 		
