@@ -1,17 +1,23 @@
+/*
+ This document contains styling for the instructions.html file.
+ For more information, see the Game.html file.
+ */
+
+/* General styling */
 #body {
-  /* font-family: "Arial Black"; */
   background-color: darkslategray;
   color: white;
   font: "Lucida Grande", "Helvetica Neue", sans-serif;
 }
 
+/* The title of the page */
 .title {
   margin-top: 3%;
-  /* font: 50px; */
   font-size: 200%;
   text-align: center;
 }
 
+/* Game rules that appear when the help button is clicked */
 #rules {
   background-color: none;
   margin-left: 30%;
@@ -21,20 +27,19 @@
   text-align: left;
 }
 
+/* The paragraph (non-title) font in the help message */
 .small {
   text-align: left;
   font-size: 80%;
 }
 
+/* The section containing both buttons */
 .help {
   text-align: center;
 }
+
+/* The styling for both buttons */
 .button {
-  /* margin-bottom: 10%;
-  margin-left: 60%; */
-  /* transform: translate(-90%, -50%); */ /* this function caused the help button to disappear */
-  /* -ms-transform: translate(-50%, -50%);
-  -webkit-transform: translate(-50%, -50%); */
   background-color: green;
   text-align: center;
   border: 1px solid black;
@@ -49,15 +54,18 @@
   cursor: pointer;
 }
 
+/* Buttons change colour when moused over */
 .button:hover{
   background-color: darkgreen;
 }
 
+/* Buttons move down slightly when pressed */
 .button:active {
 	position:relative;
 	top:1px;
 }
 
+/* Content that appears when the help button is pressed */
 #overlay {
   position: fixed;
   display: none;
@@ -68,21 +76,11 @@
   right: 0;
   bottom: 0;
   background-color: rgba(0, 0, 0, 0.6);
-
   z-index: 2;
   cursor: pointer;
 }
 
-#text {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  color: white;
-  transform: translate(-50%, -50%);
-  -ms-transform: translate(-50%, -50%);
-  -webkit-transform: translate(-50%, -50%);
-}
-
+/* Everything other than the help message gets blurred when the help button is clicked */
 .blur {
   -webkit-filter: blur(8px);
   -moz-filter: blur(8px);
