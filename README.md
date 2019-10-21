@@ -1,13 +1,29 @@
-# CITS3200_Project
-http://teaching.csse.uwa.edu.au/units/CITS3200/project/offered/Projects_2019/Farrell_multiple_goal_pursuit.html
+# Card Game
+http://teaching.csse.uwa.edu.au/units/CITS3200/project/offered/Projects_2019/Farrell_multiple_goal_pursuit.html  
+__IP Creative Commons CC BY-NC__
 
-To launch (for development/testing):
-- download zip
-- unzip
-- open up local installation of jatos
-- select import new study from top of page
-- select the zip from the project master file
+This program has been developed by _Group-1 of CITS3200 (2019)_ for use by:  
 
-For all futher development files must be editted and uploaded once raw and once as the exported study from JATOS
-- you can export a study by selecting the study from jatos
-- and clicking export
+_Simon Farrell  
+Telephone: 6488 3272  
+Email: simon.farrell@uwa.edu.au  
+Location: Psychological Science (Crawley Campus)_
+
+Card Game is a a web app that assists with online psychology studies.
+In it's current form, Card Game is a one-player game where the user plays a series of game trials against a computer opponent at a simple multiple-goal oriented card game. 
+The program runs on the [JATOS](https://www.jatos.org/) server and records various aspects of the player's performance in the game.
+
+__To launch program:__
+1. Download and unzip the program respository
+2. Open, run and log in to JATOS server
+3. Select 'Import Study' from top of the page
+4. Import 'card_game.zip' from the program root folder
+5. Run 'Card Game'
+
+__For further development:__
+1. Download and unzip the program respository
+2. Edit files as necessary (not the ones in 'card_game.zip')
+3. After edits, create a new zip file containing all source files (i.e. except 'card_game.zip')
+4. Open, run and log in to JATOS server
+5. Import this new zip file
+6. Export 'Card Game' (this export file contains necessary JATOS functions that JATOS automatically generates on import, hence this process).
