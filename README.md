@@ -22,8 +22,9 @@ __To launch program:__
 
 __For further development:__
 1. Download and unzip the program respository
-2. Edit files as necessary (not the ones in 'card_game.zip')
-3. After edits, create a new zip file containing all source files (i.e. except 'card_game.zip')
+2. Edit files within 'card_game' folder as necessary (note: not the ones in 'card_game.zip')
+3. After edits, create a new zip file containing all source files in 'card_game' folder
 4. Open, run and log in to JATOS server
 5. Import this new zip file
-6. Export 'Card Game' (this export file contains necessary JATOS functions that JATOS automatically generates on import, hence this process).
+6. Now export 'Card Game' from JATOS to replace existing 'card_game.zip' (this export file contains necessary JATOS functions that are automatically generated on import, hence this process).
+7. Push all changes to repository
