@@ -20,7 +20,8 @@ __To launch program:__
 4.	Select 'Import Study' from top of the page.
 5.	Import 'card_game.zip' from the program root folder.
 6.	Select 'Card Game’s from list of studies.
-7.	Select run 'Card Game' .
+7.	Select run 'Card Game'.
+
 __For further development:__
 1.	Follow all the step above to run the current version of the game from JATOS.
 2.	Edit files within the JATOS server 'study_assets_root/card_game' folder as necessary (note: not the ones in 'card_game.zip').
