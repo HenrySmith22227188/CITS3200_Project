@@ -328,7 +328,7 @@ function incrementScore(player, scoreToAdd, goalNumber) {
 // Another example AI this one just randomly picks a lane, the chances of each lane aren't even though but it does consider
 // if the lane is open.
 function randomAI() {
-	var goalToIncrement = -1;
+	var goalToIncrement = Math.round(Math.random()*game.numberOfGoals);
 	while(game.goalOpen[1][goalToIncrement] == false) {
 		goalToIncrement = Math.round(Math.random()*game.numberOfGoals);
 	}

@@ -1,10 +1,10 @@
-// the javascript here defines most of the variables for the trails with the object, data
+// the javascript here defines most of the variables for the trials with the array, data
 // each index of the array, data is a trial of the experiment
 // such that data[0] is all the variables for the first trial.
 // the game will keep running trials till it gets to the end of the array, data.
 // if the varaibles are undefined the game will crash. or have unexpected behaviour.
-// most of the variables have their aquivalent in the game or card objects
-// numberOfCards is also used to set the duration of the trail.
+// most of the variables have their equivalent in the game or card objects
+// numberOfCards is also used to set the duration of the trial.
 {
 	data = [{
 		"goalValue": [
