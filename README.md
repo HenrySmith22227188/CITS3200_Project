@@ -15,7 +15,7 @@ The program runs on the [JATOS](https://www.jatos.org/) server and records vario
 
 __To launch program:__
 1.	Download the zipped files from the program repository and unzip the root folder.
-2.	Run local or server installation of JATOS.
+2.	Run local or server installation of JATOS. if you need help doing this follow this guide https://www.jatos.org/Installation.html
 3.	Navigate to the server in your browser and log in to JATOS on being prompted.
 4.	Select 'Import Study' from top of the page.
 5.	Import 'card_game.zip' from the program root folder.
